@@ -111,7 +111,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
   b <- newParam "b" $ Prim int64
   let addop = Add Int64 OverflowUndef
   lam_bdy <- runBodyBuilder . localScope (scopeOfLParams [a,b]) $ do
-    r <- letSubExp "r" $ BasicOp $ BinOp addop (Var $ paramName a) (Var $ paramName a)
+    r <- letSubExp "r" $ BasicOp $ BinOp addop (Var $ paramName a) (Var $ paramName b)
     resultBodyM [r]
   lam_add_int64 <- return $ Lambda [a,b] lam_bdy [Prim $ IntType Int64]
   let hist_zrn = HistOp w rf [zr_counts0] [intConst Int64 0] lam_add_int64
