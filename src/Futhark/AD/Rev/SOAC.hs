@@ -90,20 +90,29 @@ vjpSOAC ops pat _aux (Screma w as form) m
     vjpStm ops mapstm $ vjpStm ops redstm m
 vjpSOAC ops pat aux (Scatter w lam ass written_info) m =
   vjpScatter ops pat aux (w, lam, ass, written_info) m
+
+vjpSOAC ops pat@(Pat pes) aux his@(Hist n arrs [hist_inner] f) m 
+  | not $ isIdentityLambda f,
+    HistOp w@(Shape [wsubexp]) rf [orig_dst] [ne] lam <- hist_inner
+    = do 
+      
+        let (isarr, vsarr) = splitAt (div (length arrs) 2) pes
+        map_ispat <- mapM arrMapPatElem isarr
+        let map_stm = mkLet map_ispat $ Op $ Screma n arrs (mapSOAC f)
+        -- Needs to also vjpstm of the original hist..
+        identityLam <- mkIdentityLambda $ lambdaReturnType f
+        vjpSOAC ops pat aux (Hist n arrs [hist_inner] identityLam ) $ vjpStm ops map_stm m -- Do the vjpSoac as a statement as well (runbodybuilder and two vjpStm's instead)
+  where
+    arrMapPatElem = return . patElemIdent
+    newIsName is  =
+      newIdent (baseString (is) ++ "_trans") $ Prim int64
+
 vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m 
   | isIdentityLambda f,
     HistOp w rf [orig_dst] [ne] add_lam <- hist_add,
     Just (Addition _) <- isBinOpTypeLam add_lam 
     = 
       diffPlusRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, add_lam) m
--- vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m 
---   | isIdentityLambda f, <- Change to deal with multiplication
---                        maybe make it general so it simply calls vjpSOAC with the identity lambda and real arrs
---                        And thus making it support all operation
---     HistOp w rf [orig_dst] [ne] add_lam <- hist_add,
---     Just _ <- isAddTowLam add_lam 
---     = 
---       diffplusRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, add_lam) m
 vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m 
   | isIdentityLambda f,
     HistOp w rf [orig_dst] [ne] mul_lam <- hist_add,
@@ -116,10 +125,14 @@ vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m
     Just (MinMax bop) <- isBinOpTypeLam bop_lam 
     = 
       diffMinMaxRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, bop_lam, bop) m
-
+vjpSOAC ops pat aux (Hist n arrs [inner_hist] f) m 
+  | isIdentityLambda f,
+    HistOp w rf [orig_dst] [ne] lam <- inner_hist
+    = 
+      diffGeneralRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, lam) m
 vjpSOAC _ _ _ soac _ =
   error $ "vjpSOAC unhandled:\n" ++ pretty soac
-
+ 
 
 isBinOpTypeLam :: Lambda -> Maybe BinOpType
 isBinOpTypeLam lam = isSpecOpLam isAddOp $ filterMapOp lam

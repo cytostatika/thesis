@@ -1,4 +1,4 @@
-module Futhark.AD.Rev.RBI (diffPlusRBI, diffMulRBI, diffMinMaxRBI) where
+module Futhark.AD.Rev.RBI (diffPlusRBI, diffMulRBI, diffMinMaxRBI, diffGeneralRBI) where
 
 import Control.Monad
 import Futhark.AD.Rev.Monad
@@ -7,6 +7,146 @@ import Futhark.Builder
 import Futhark.IR.SOACS
 import Futhark.Tools
 import Futhark.Transform.Rename
+
+diffGeneralRBI ::
+  VjpOps ->
+  Pat ->
+  StmAux () ->
+  (SubExp, [VName], Lambda) ->
+  (Shape, SubExp, VName, SubExp, Lambda) ->
+  ADM () ->
+  ADM ()
+diffGeneralRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), rf, orig_dst, ne, lam) m = do
+  iota_n <- letExp "iota_n" $ BasicOp $ Iota n (intConst Int64 0) (intConst Int64 1) Int64
+
+  let bitType = int64
+  let zeroSubExp = Constant $ IntValue $ intValue Int64 0
+  let oneSubExp = Constant $ IntValue $ intValue Int64 1
+  
+  -- bits = map (\ind_x -> (ind_x >> digit_n) & 1) ind
+  ind_x <- newParam "ind_x" $ Prim bitType
+  digit_n <- letSubExp "zero_digit" $ zeroExp $ Prim bitType -- placeholder
+  bits_map_bdy <- runBodyBuilder . localScope (scopeOfLParams [ind_x]) $ do
+    eBody
+     [
+       eBinOp (And Int64)
+         (eBinOp (LShr Int64) (eParam ind_x) (toExp digit_n))
+         (eSubExp $ Constant $ IntValue $ intValue Int64 1)
+     ]
+  let bits_map_lam = Lambda [ind_x] bits_map_bdy [Prim bitType]
+  bits <- letExp "bits" $ Op $ Screma n [vs] (ScremaForm [] [] bits_map_lam)
+  
+  -- let bits_inv = map (\b -> 1 - b) bits
+  bit_x <- newParam "bit_x" $ Prim bitType
+  bits_inv_map_bdy <- runBodyBuilder . localScope (scopeOfLParams [bit_x]) $ do
+    eBody
+     [
+       eBinOp (Sub Int64 OverflowUndef)
+        (eSubExp $ Constant $ IntValue $ intValue Int64 1)
+        (eParam bit_x)
+     ]
+  let bits_inv_map_lam = Lambda [bit_x] bits_inv_map_bdy [Prim bitType]
+  bits_inv <- letExp "bits_inv" $ Op $ Screma n [bits] (ScremaForm [] [] bits_inv_map_lam)
+
+  -- let ps0 = scan (+) 0 (bits_inv)
+    -- *** Generalize this part so we can use it twice without geting "bound twice" error
+  ps0_x <- newParam "ps0_x" $ Prim bitType
+  ps0_y <- newParam "ps0_y" $ Prim bitType
+  ps0_scanlam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps0_x, ps0_y]) $ do
+    eBody
+     [
+       eBinOp (Add Int64 OverflowUndef)
+        (eParam ps0_x)
+        (eParam ps0_y)
+     ]
+  let ps0_scanlam = Lambda [ps0_x, ps0_y] ps0_scanlam_bdy [Prim bitType]
+  let ps0_scan = Scan ps0_scanlam [Constant $ IntValue $ intValue Int64 0]
+    -- ***
+  f' <- mkIdentityLambda [Prim bitType]
+  ps0 <- letExp "ps0" $ Op $ Screma n [bits_inv] (ScremaForm [ps0_scan] [] f')
+
+  -- let ps0_clean = map2 (*) bits_inv ps0 
+  ps0clean_bitinv <- newParam "ps0clean_bitinv" $ Prim bitType
+  ps0clean_ps0 <- newParam "ps0clean_ps0" $ Prim bitType
+  ps0clean_lam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps0clean_bitinv, ps0clean_ps0]) $ do
+    eBody
+     [
+       eBinOp (Mul Int64 OverflowUndef)
+        (eParam ps0clean_bitinv)
+        (eParam ps0clean_ps0)
+     ]
+  let ps0clean_lam = Lambda [ps0clean_bitinv, ps0clean_ps0] ps0clean_lam_bdy [Prim bitType]
+  ps0clean <- letExp "ps0_clean" $ Op $ Screma n [bits_inv, ps0] (ScremaForm [] [] ps0clean_lam)
+
+  -- let ps1 = scan (+) 0 bits
+    -- *** Generalize this part so we can use it twice without geting "bound twice" error
+  ps1_x <- newParam "ps1_x" $ Prim bitType
+  ps1_y <- newParam "ps1_y" $ Prim bitType
+  ps1_scanlam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps1_x, ps1_y]) $ do
+    eBody
+     [
+       eBinOp (Add Int64 OverflowUndef)
+        (eParam ps1_x)
+        (eParam ps1_y)
+     ]
+  let ps1_scanlam = Lambda [ps1_x, ps1_y] ps1_scanlam_bdy [Prim bitType]
+  let ps1_scan = Scan ps1_scanlam [Constant $ IntValue $ intValue Int64 0]
+    -- ***
+  f'' <- mkIdentityLambda [Prim bitType]
+  ps1 <- letExp "ps1" $ Op $ Screma n [bits] (ScremaForm [ps1_scan] [] f'')
+
+
+  -- let ps0_offset = reduce (+) 0 bits_inv
+    -- *** Generalize this part so we can use it twice without geting "bound twice" error
+  ps0off_x <- newParam "ps0off_x" $ Prim bitType
+  ps0off_y <- newParam "ps0off_y" $ Prim bitType
+  ps0off_redlam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps0off_x, ps0off_y]) $ do
+    eBody
+     [
+       eBinOp (Add Int64 OverflowUndef)
+        (eParam ps0off_x)
+        (eParam ps0off_y)
+     ]
+  let ps0off_redlam = Lambda [ps0off_x, ps0off_y] ps0off_redlam_bdy [Prim bitType]
+    -- ***
+  ps0off_red <- reduceSOAC [Reduce Commutative ps0off_redlam [intConst Int64 0]]
+  ps0off <- letExp "ps0off" $ Op $ Screma n [bits_inv] ps0off_red
+
+
+  -- let ps1_clean = map (+ps0_offset) ps1
+  ps1clean_x <- newParam "ps1clean_x" $ Prim bitType
+  ps1clean_lam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps1clean_x]) $ do
+    eBody
+     [
+       eBinOp (Add Int64 OverflowUndef)
+        (eParam ps1clean_x)
+        (eSubExp $ Var ps0off)
+     ]
+  let ps1clean_lam = Lambda [ps1clean_x] ps1clean_lam_bdy [Prim bitType]
+  ps1clean <- letExp "ps1clean" $ Op $ Screma n [ps1] (ScremaForm [] [] ps1clean_lam)
+
+  -- let ps0_clean = map2 (*) bits_inv ps0 
+  ps1clean'_bit <- newParam "ps1cleanprim_bit" $ Prim bitType
+  ps1clean'_ps1clean <- newParam "ps1cleanprim_ps1clean" $ Prim bitType
+  ps1clean'_lam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps1clean'_bit, ps1clean'_ps1clean]) $ do
+    eBody
+     [
+       eBinOp (Mul Int64 OverflowUndef)
+        (eParam ps1clean'_bit)
+        (eParam ps1clean'_ps1clean)
+     ]
+  let ps1clean'_lam = Lambda [ps1clean'_bit, ps1clean'_ps1clean] ps1clean'_lam_bdy [Prim bitType]
+  ps1clean' <- letExp "ps1_cleanprim" $ Op $ Screma n [bits, ps1clean] (ScremaForm [] [] ps1clean'_lam)
+
+
+  -- This part is just to let dev -s return something useful
+  -- return the first w values in array ------- Change this vvv to the most recent expression
+  last_sliced <- letExp "last_arr_sliced" $ BasicOp $ Index ps1clean' $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
+  -- This gives zero atm, who cares it stays just because it will compile
+  addStm $ Let pat aux $ BasicOp $ Index ps0 $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
+  m
+  -- Adjoint value is equal to sliced - allows me to sneakpeak at generated code
+  insAdj orig_dst last_sliced
 
 
 -- TODO
@@ -165,7 +305,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
       letBind (Pat [pe]) $
         Op $
           Screma
-            wsubexp-- Size??
+            wsubexp
             [orig_dst, h_part]
             (ScremaForm [] [] (Lambda ps3 lam_pe_bdy [Prim t]))
 
