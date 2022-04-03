@@ -8,108 +8,48 @@ import Futhark.IR.SOACS
 import Futhark.Tools
 import Futhark.Transform.Rename
 
-diffGeneralRBI ::
-  VjpOps ->
-  Pat ->
-  StmAux () ->
-  (SubExp, [VName], Lambda) ->
-  (Shape, SubExp, VName, SubExp, Lambda) ->
-  ADM () ->
-  ADM ()
-diffGeneralRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), rf, orig_dst, ne, lam) m = do
-  iota_n <- letExp "iota_n" $ BasicOp $ Iota n (intConst Int64 0) (intConst Int64 1) Int64
-
+-- partion2Maker - Takes flag array and values and creates a scatter SOAC
+--                  which corresponds to the partition2 of the inputs
+-- partition2Maker size flags values = 
+partition2Maker :: SubExp -> VName -> VName -> BuilderT SOACS ADM (SOAC SOACS)
+partition2Maker n bits xs = do
+ 
   let bitType = int64
-  let zeroSubExp = Constant $ IntValue $ intValue Int64 0
-  let oneSubExp = Constant $ IntValue $ intValue Int64 1
-  
-  -- bits = map (\ind_x -> (ind_x >> digit_n) & 1) ind
-  ind_x <- newParam "ind_x" $ Prim bitType
-  digit_n <- letSubExp "zero_digit" $ zeroExp $ Prim bitType -- placeholder
-  bits_map_bdy <- runBodyBuilder . localScope (scopeOfLParams [ind_x]) $ do
-    eBody
-     [
-       eBinOp (And Int64)
-         (eBinOp (LShr Int64) (eParam ind_x) (toExp digit_n))
-         (eSubExp $ Constant $ IntValue $ intValue Int64 1)
-     ]
-  let bits_map_lam = Lambda [ind_x] bits_map_bdy [Prim bitType]
-  bits <- letExp "bits" $ Op $ Screma n [vs] (ScremaForm [] [] bits_map_lam)
-  
+  let zeroSubExp = Constant $ IntValue $ intValue Int64 (0 :: Integer)
+  let oneSubExp = Constant $ IntValue $ intValue Int64 (1 :: Integer)
+
   -- let bits_inv = map (\b -> 1 - b) bits
   bit_x <- newParam "bit_x" $ Prim bitType
   bits_inv_map_bdy <- runBodyBuilder . localScope (scopeOfLParams [bit_x]) $ do
     eBody
      [
        eBinOp (Sub Int64 OverflowUndef)
-        (eSubExp $ Constant $ IntValue $ intValue Int64 1)
+        (eSubExp $ oneSubExp)
         (eParam bit_x)
      ]
   let bits_inv_map_lam = Lambda [bit_x] bits_inv_map_bdy [Prim bitType]
   bits_inv <- letExp "bits_inv" $ Op $ Screma n [bits] (ScremaForm [] [] bits_inv_map_lam)
 
   -- let ps0 = scan (+) 0 (bits_inv)
-    -- *** Generalize this part so we can use it twice without geting "bound twice" error
-  ps0_x <- newParam "ps0_x" $ Prim bitType
-  ps0_y <- newParam "ps0_y" $ Prim bitType
-  ps0_scanlam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps0_x, ps0_y]) $ do
-    eBody
-     [
-       eBinOp (Add Int64 OverflowUndef)
-        (eParam ps0_x)
-        (eParam ps0_y)
-     ]
-  let ps0_scanlam = Lambda [ps0_x, ps0_y] ps0_scanlam_bdy [Prim bitType]
-  let ps0_scan = Scan ps0_scanlam [Constant $ IntValue $ intValue Int64 0]
-    -- ***
+  ps0_add_lam <- binOpLambda (Add Int64 OverflowUndef) bitType
+  let ps0_add_scan = Scan ps0_add_lam [zeroSubExp]
   f' <- mkIdentityLambda [Prim bitType]
-  ps0 <- letExp "ps0" $ Op $ Screma n [bits_inv] (ScremaForm [ps0_scan] [] f')
+  ps0 <- letExp "ps0" $ Op $ Screma n [bits_inv] (ScremaForm [ps0_add_scan] [] f')
 
   -- let ps0_clean = map2 (*) bits_inv ps0 
-  ps0clean_bitinv <- newParam "ps0clean_bitinv" $ Prim bitType
-  ps0clean_ps0 <- newParam "ps0clean_ps0" $ Prim bitType
-  ps0clean_lam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps0clean_bitinv, ps0clean_ps0]) $ do
-    eBody
-     [
-       eBinOp (Mul Int64 OverflowUndef)
-        (eParam ps0clean_bitinv)
-        (eParam ps0clean_ps0)
-     ]
-  let ps0clean_lam = Lambda [ps0clean_bitinv, ps0clean_ps0] ps0clean_lam_bdy [Prim bitType]
-  ps0clean <- letExp "ps0_clean" $ Op $ Screma n [bits_inv, ps0] (ScremaForm [] [] ps0clean_lam)
+  ps0clean_mul_lam <- binOpLambda (Mul Int64 OverflowUndef) bitType
+  ps0clean <- letExp "ps0_clean" $ Op $ Screma n [bits_inv, ps0] (ScremaForm [] [] ps0clean_mul_lam)
 
   -- let ps1 = scan (+) 0 bits
-    -- *** Generalize this part so we can use it twice without geting "bound twice" error
-  ps1_x <- newParam "ps1_x" $ Prim bitType
-  ps1_y <- newParam "ps1_y" $ Prim bitType
-  ps1_scanlam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps1_x, ps1_y]) $ do
-    eBody
-     [
-       eBinOp (Add Int64 OverflowUndef)
-        (eParam ps1_x)
-        (eParam ps1_y)
-     ]
-  let ps1_scanlam = Lambda [ps1_x, ps1_y] ps1_scanlam_bdy [Prim bitType]
-  let ps1_scan = Scan ps1_scanlam [Constant $ IntValue $ intValue Int64 0]
-    -- ***
+  ps1_scanlam <- binOpLambda (Add Int64 OverflowUndef) bitType
+  let ps1_scan = Scan ps1_scanlam [zeroSubExp]
   f'' <- mkIdentityLambda [Prim bitType]
   ps1 <- letExp "ps1" $ Op $ Screma n [bits] (ScremaForm [ps1_scan] [] f'')
 
 
-  -- let ps0_offset = reduce (+) 0 bits_inv
-    -- *** Generalize this part so we can use it twice without geting "bound twice" error
-  ps0off_x <- newParam "ps0off_x" $ Prim bitType
-  ps0off_y <- newParam "ps0off_y" $ Prim bitType
-  ps0off_redlam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps0off_x, ps0off_y]) $ do
-    eBody
-     [
-       eBinOp (Add Int64 OverflowUndef)
-        (eParam ps0off_x)
-        (eParam ps0off_y)
-     ]
-  let ps0off_redlam = Lambda [ps0off_x, ps0off_y] ps0off_redlam_bdy [Prim bitType]
-    -- ***
-  ps0off_red <- reduceSOAC [Reduce Commutative ps0off_redlam [intConst Int64 0]]
+  -- let ps0_offset = reduce (+) 0 bits_inv    
+  ps0off_add_lam <- binOpLambda (Add Int64 OverflowUndef) bitType
+  ps0off_red <- reduceSOAC [Reduce Commutative ps0off_add_lam [intConst Int64 0]]
   ps0off <- letExp "ps0off" $ Op $ Screma n [bits_inv] ps0off_red
 
 
@@ -126,28 +66,96 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp
   ps1clean <- letExp "ps1clean" $ Op $ Screma n [ps1] (ScremaForm [] [] ps1clean_lam)
 
   -- let ps0_clean = map2 (*) bits_inv ps0 
-  ps1clean'_bit <- newParam "ps1cleanprim_bit" $ Prim bitType
-  ps1clean'_ps1clean <- newParam "ps1cleanprim_ps1clean" $ Prim bitType
-  ps1clean'_lam_bdy <- runBodyBuilder . localScope (scopeOfLParams [ps1clean'_bit, ps1clean'_ps1clean]) $ do
+  ps1cleanprim_mul_lam <- binOpLambda (Mul Int64 OverflowUndef) bitType
+  ps1clean' <- letExp "ps1_cleanprim" $ Op $ Screma n [bits, ps1clean] (ScremaForm [] [] ps1cleanprim_mul_lam)
+
+  -- let ps = map2 (+) ps0_clean ps1_clean'
+  ps_add_lam <- binOpLambda (Add Int64 OverflowUndef) bitType
+  ps <- letExp "ps" $ Op $ Screma n [ps0clean, ps1clean'] (ScremaForm [] [] ps_add_lam)
+
+
+  -- let ps_actual = map (-1) ps
+  psactual_x <- newParam "psactual_x" $ Prim bitType
+  psactual_lam_bdy <- runBodyBuilder . localScope (scopeOfLParams [psactual_x]) $ do
     eBody
      [
-       eBinOp (Mul Int64 OverflowUndef)
-        (eParam ps1clean'_bit)
-        (eParam ps1clean'_ps1clean)
+       eBinOp (Sub Int64 OverflowUndef)
+        (eParam psactual_x)
+        (eSubExp $ oneSubExp)
      ]
-  let ps1clean'_lam = Lambda [ps1clean'_bit, ps1clean'_ps1clean] ps1clean'_lam_bdy [Prim bitType]
-  ps1clean' <- letExp "ps1_cleanprim" $ Op $ Screma n [bits, ps1clean] (ScremaForm [] [] ps1clean'_lam)
+  let psactual_lam = Lambda [psactual_x] psactual_lam_bdy [Prim bitType]
+  psactual <- letExp "psactual" $ Op $ Screma n [ps] (ScremaForm [] [] psactual_lam)
+  
+  -- let scatter_inds = scatter inds ps_actual inds
+  -- return scatter_inds
+  f''' <- mkIdentityLambda [Prim int64, Prim int64]
+  xs_cpy <- letExp (baseString xs ++ "_copy") $ BasicOp $ Copy xs
+  return $ Scatter n [psactual, xs] f''' [(Shape [n], 1, xs_cpy)]
 
 
+diffGeneralRBI ::
+  Pat ->
+  StmAux () ->
+  (SubExp, [VName]) ->
+  (Shape, VName) ->
+  ADM () ->
+  ADM ()
+diffGeneralRBI pat aux (n, [is, vs]) (Shape [wsubexp], orig_dst) m = do
+  let bitType = int64
+  let zeroSubExp = Constant $ IntValue $ intValue Int64 (0::Integer)
+  let oneSubExp = Constant $ IntValue $ intValue Int64 (1::Integer)
+  
+  --is is outer, fparam is the result of each iteration
+  -- inner loop should empty
+  --Let XS’ = loop XS = xs0 for I < n do map (*2) XS
+
+
+  i <- newVName "i"
+  isForLoop <- newVName "is_rebound"
+  is_cpy <- letExp (baseString is ++ "_copyLoop") $ BasicOp $ Copy is
+
+  isType <- lookupType is
+  let isDeclType = toDecl isType Unique
+  let paramIs = Param mempty isForLoop isDeclType
+  let loop_vars = [(paramIs, Var is_cpy)]
+  
+  -- change this to be = log2ceiling(maxTypeSize) 
+  let bound = Constant $ IntValue $ intValue Int64 (6::Integer)
+
+  (res, stms) <- runBuilderT' . localScope (scopeOfFParams [paramIs]) $ do
+  
+    -- bits = map (\ind_x -> (ind_x >> digit_n) & 1) ind
+    ind_x <- newParam "ind_x" $ Prim bitType
+    bits_map_bdy <- runBodyBuilder . localScope (scopeOfLParams [ind_x]) $
+      eBody
+      [
+        eBinOp (And Int64)
+          (eBinOp (LShr Int64) (eParam ind_x) (eSubExp $ Var i))
+          (eSubExp $ oneSubExp)
+      ]
+    let bits_map_lam = Lambda [ind_x] bits_map_bdy [Prim bitType]
+    bits <- letExp "bits" $ Op $ Screma n [vs] (ScremaForm [] [] bits_map_lam)
+
+    -- partition2
+    scatter_soac <- partition2Maker n bits $ paramName paramIs 
+    letSubExp (baseString is ++ "_scattered") $ Op $ scatter_soac
+  loop_bdy <- mkBodyM stms [subExpRes res]
+
+  loop_res <- letExp "sorted_is" $ DoLoop loop_vars (ForLoop i Int64 bound []) loop_bdy
+
+   
+  
+
+  
   -- This part is just to let dev -s return something useful
   -- return the first w values in array ------- Change this vvv to the most recent expression
-  last_sliced <- letExp "last_arr_sliced" $ BasicOp $ Index ps1clean' $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
+  last_sliced <- letExp "last_arr_sliced" $ BasicOp $ Index loop_res $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
   -- This gives zero atm, who cares it stays just because it will compile
-  addStm $ Let pat aux $ BasicOp $ Index ps0 $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
+  addStm $ Let pat aux $ BasicOp $ Index loop_res $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
   m
   -- Adjoint value is equal to sliced - allows me to sneakpeak at generated code
   insAdj orig_dst last_sliced
-
+diffGeneralRBI _ _ _ _ _ = error $ "Pattern matching failed in diffGeneralRBI"
 
 -- TODO
 -- 1. Remove all unnecessary parameters and clean up code (better comments?)
@@ -156,14 +164,14 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp
 -- 3. Explain the pseudocode and the implemented code in the report
 -- 4. Read through all aux functions and remove unneccessary parts
 diffPlusRBI ::
-  VjpOps ->
   Pat ->
   StmAux () ->
   (SubExp, [VName], Lambda) ->
   (Shape, SubExp, VName, SubExp, Lambda) ->
   ADM () ->
   ADM ()
-diffPlusRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w, rf, orig_dst, ne, add_lam) m = do
+diffPlusRBI pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w, rf, orig_dst, ne, add_lam) m = do
+
 
   -- Forward pass with copy of orig_dst, backwards will need the original.
   dst_cpy <- letExp (baseString orig_dst ++ "_copy") $ BasicOp $ Copy orig_dst
@@ -184,21 +192,24 @@ diffPlusRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w, rf, orig_dst, ne,
   let map_bar_lam = Lambda [pind] map_bar_lam_bdy [eltp]
   vs_bar_contrib <- letExp (baseString vs ++ "_bar") $ Op $ Screma n [is] (ScremaForm [] [] map_bar_lam)
   void $ updateAdj vs vs_bar_contrib
-  
+diffPlusRBI _ _ _ _ _ = error "Pattern matching failed in diffPlusRBI"
   
 diffMulRBI ::
-  VjpOps ->
   Pat ->
   StmAux () ->
-  (SubExp, [VName], Lambda) ->
+  (SubExp, [VName]) ->
   (Shape, SubExp, VName, SubExp, Lambda, BinOp) ->
   ADM () ->
   ADM ()
-diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), rf, orig_dst, ne, mul_lam, mulOp) m = do
+diffMulRBI (Pat [pe]) aux (n, [is, vs]) (w@(Shape [wsubexp]), rf, orig_dst, ne, mul_lam, mulOp) m = do
 
   let t = binOpType mulOp
   t_zero <- letSubExp "t_zero" $ zeroExp $ Prim t
   t_one <- letSubExp "t_one" $ oneExp $ Prim t
+  
+  let zeroVal = intValue Int64 (0 :: Integer)
+  let zeroSubExp = Constant $ IntValue $ zeroVal
+  let oneSubExp = Constant $ IntValue $ intValue Int64 (1 :: Integer)
   
   ------  FORWARD  ------
 
@@ -210,11 +221,11 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
      [eIf
           (eCmpOp (CmpEq t) (eParam v_f) (toExp t_zero))
           ( eBody
-              [ eSubExp (Constant $ IntValue $ intValue Int64 1)
+              [ eSubExp oneSubExp
               ]
           )
           ( eBody
-              [ eSubExp (Constant $ IntValue $ intValue Int64 0)
+              [ eSubExp zeroSubExp
               ]
           )
      ]
@@ -241,7 +252,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
   vs_nonzeros <- letExp "nonzero_values" $ Op $ Screma n [vs] (ScremaForm [] [] nzp_map_lam)
   
 -- Everything above should be fine
-  zr_counts0 <- letExp "zr_cts" $ BasicOp $ Replicate (w) (intConst Int64 0)
+  zr_counts0 <- letExp "zr_cts" $ BasicOp $ Replicate (w) zeroSubExp
   nz_prods0 <- letExp "nz_prd" $ BasicOp $ Replicate (w) ne
   nz_prods <- newVName "non_zero_prod"
   zr_counts <- newVName "zero_count"
@@ -254,7 +265,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
     r <- letSubExp "r" $ BasicOp $ BinOp addop (Var $ paramName a) (Var $ paramName b)
     resultBodyM [r]
   lam_add_int64 <- return $ Lambda [a,b] lam_bdy [Prim $ IntType Int64]
-  let hist_zrn = HistOp w rf [zr_counts0] [intConst Int64 0] lam_add_int64
+  let hist_zrn = HistOp w rf [zr_counts0] [zeroSubExp] lam_add_int64
   let hist_nzp = HistOp w rf [nz_prods0] [ne] mul_lam
   f' <- mkIdentityLambda [Prim $ IntType Int64, Prim $ IntType Int64, Prim t, Prim $ IntType Int64]
   let pe_tp = patElemDec pe
@@ -279,7 +290,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
     tmps <-
       letTupExp "tmp_if_res"
         =<< eIf
-          (toExp $ le64 zr_count .>. pe64 (intConst Int64 0))
+          (toExp $ le64 zr_count .>. pe64 zeroSubExp)
           (resultBodyM [Constant $ blankPrimValue t])
           (resultBodyM [Var nz_prod])
     addStm (mkLet [Ident result $ Prim t] $ BasicOp $ SubExp $ Var $ head tmps)
@@ -292,7 +303,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
       letExp "hist_part" $
         Op $
           Screma
-            wsubexp -- Size??
+            wsubexp 
             [nz_prods, zr_counts]
             (ScremaForm [] [] (Lambda pstuple lam_bdy_2 [Prim t]))
 
@@ -351,7 +362,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
   bdy_tmp <- runBodyBuilder . localScope (scopeOfLParams (v_b : params) ) $ do
     eBody 
       [ eIf
-          (eCmpOp (CmpEq $ IntType Int64) (eSubExp $ Var zr_cts) (eSubExp (Constant $ IntValue $ intValue Int64 0)) )
+          (eCmpOp (CmpEq $ IntType Int64) (eSubExp $ Var zr_cts) (eSubExp zeroSubExp) )
           ( eBody
             [ eBinOp mulOp (eBinOp (getBinOpDiv mulOp) (eSubExp $ Var nz_prd) (eParam v_b)) (eSubExp $ Var pr_bar)]
             
@@ -360,7 +371,7 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
             [ eIf 
                 ( eBinOp LogAnd
                     (eCmpOp (CmpEq t) (eParam v_b) (toExp t_zero))
-                    (eCmpOp (CmpEq $ IntType Int64) (eSubExp $ Var zr_cts) (eSubExp (Constant $ IntValue $ intValue Int64 1)) )
+                    (eCmpOp (CmpEq $ IntType Int64) (eSubExp $ Var zr_cts) (eSubExp oneSubExp) )
                 )
                 (eBody
                   [eBinOp mulOp (eSubExp $ Var nz_prd) (eSubExp $ Var pr_bar)]
@@ -397,20 +408,20 @@ diffMulRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), 
     getBinOpDiv (Mul t _) = SDiv t Unsafe
     getBinOpDiv (FMul t) = FDiv t
     getBinOpDiv _ = error "RBIDiffMul: BinOp is not multiplication."
+diffMulRBI _ _ _ _ _ = error "Pattern matching failed in diffMulRBI"
 
 diffMinMaxRBI ::
-  VjpOps ->
   Pat ->
   StmAux () ->
-  (SubExp, [VName], Lambda) ->
-  (Shape, SubExp, VName, SubExp, Lambda, BinOp) ->
+  (SubExp, [VName]) ->
+  (Shape, SubExp, VName, SubExp, BinOp) ->
   ADM () ->
   ADM ()
-diffMinMaxRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]), rf, orig_dst, ne, mul_lam, bop) m = do
+diffMinMaxRBI (Pat [pe]) aux (n, [is, vs]) (w@(Shape [wsubexp]), rf, orig_dst, ne, bop) m = do
 
   let t = binOpType bop
-  let ptp = Prim t
-  let negOne = intConst Int64 (-1)
+  
+  let negOne = intConst Int64 (-1::Integer)
 
   -- *** Forward Pass ***
   orig_dst_cpy <- letExp (baseString orig_dst ++ "_cpy") $ BasicOp $ Copy orig_dst
@@ -497,8 +508,10 @@ diffMinMaxRBI ops pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w@(Shape [wsubexp]
   vs_bar' <- letExp (baseString vs ++ "_bar") $ Op scatter_soac
   insAdj vs vs_bar'
 
-  where
-    mkI64ArrType len = Array int64 (Shape [len]) NoUniqueness
+  -- where
+  --   mkI64ArrType len = Array int64 (Shape [len]) NoUniqueness
+diffMinMaxRBI _ _ _ _ _ = error "Pattern matching failed in diffMinMaxRBI"
+
 
 getBinOpPlus :: PrimType -> BinOp
 getBinOpPlus (IntType x) = Add x OverflowUndef
