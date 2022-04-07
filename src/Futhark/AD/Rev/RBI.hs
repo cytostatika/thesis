@@ -169,21 +169,20 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
   let negOneSubExp = Constant $ IntValue $ intValue Int64 ((-1) :: Integer)
   
 
--- flags = map (\ind -> if 0 <= ind <= histDim then 1 else 0 inds)
+-- flags = map (\ind -> ind < 0 then 0 else (if histDim < ind then 0 else 1)) inds
   ind_param <- newParam "ind" $ Prim int64
   pred_body <- runBodyBuilder . localScope (scopeOfLParams [ind_param]) $
     eBody
-      [ eIf -- if 0 <= ind
-        (eCmpOp (CmpSle Int64) (eSubExp zeroSubExp) (eParam ind_param) )
+      [ eIf -- if ind < 0 then 0
+        (eCmpOp (CmpSlt Int64) (eParam ind_param) (eSubExp zeroSubExp)  )
         (eBody [eSubExp zeroSubExp])
         (eBody
           [
-            eIf -- if ind > histDim
+            eIf -- if histDim < ind then 0 else 1
             (eCmpOp (CmpSlt Int64) (eSubExp wsubexp) (eParam ind_param) )
             (eBody [eSubExp zeroSubExp])
             (eBody [eSubExp oneSubExp])
           ])
-      
       ]
   let pred_lambda = Lambda [ind_param] pred_body [Prim int64]
   flags <- letExp "flags" $ Op $ Screma n [inds] $ ScremaForm [][] pred_lambda
@@ -197,12 +196,12 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
   lastElem <- letSubExp "lastElem" $ BasicOp $ BinOp (Sub Int64 OverflowUndef) n oneSubExp
   n' <- letSubExp "new_length" $ BasicOp $ Index flags_scanned (fullSlice (Prim int64) [DimFix lastElem])
 
-  -- new_inds = map (\(flag, flag_scan) -> if flag == 1 then flag_scan - 1 else -1)
+  -- new_inds = map (\(flag, flag_scan) -> if flag == 1 then flag_scan - 1 else -1) flags flag_scanned
   flag <- newParam "flag" $ Prim int64
   flag_scan <- newParam "flag_scan" $ Prim int64
   new_inds_body <- runBodyBuilder . localScope (scopeOfLParams [flag, flag_scan]) $
     eBody
-    [ eIf -- if flag == 1
+    [ eIf
       (eCmpOp (CmpEq int64) (eParam flag) (eSubExp oneSubExp))
       (eBody [eBinOp (Sub Int64 OverflowUndef) (eSubExp $ Var $ paramName flag_scan) (eSubExp oneSubExp)])
       (eBody [eSubExp negOneSubExp])
@@ -212,11 +211,11 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
       
   -- new_indexes = scatter (Scratch int n') new_inds (iota n)     
   f' <- mkIdentityLambda [Prim int64, Prim int64]
-  orig_indexes <- letExp "orig_indexes" $ BasicOp $ Iota n zeroSubExp oneSubExp Int64
+  orig_indexes_iota <- letExp "orig_indexes_iota" $ BasicOp $ Iota n zeroSubExp oneSubExp Int64
   indexes_dst <- letExp "indexes_dst" $ BasicOp $ Scratch int64 [n']
-  new_indexes <- letExp "new_indexes" $ Op $ Scatter n [new_inds, orig_indexes] f' [(Shape [n'], 1, indexes_dst)]
+  new_indexes <- letExp "new_indexes" $ Op $ Scatter n [new_inds, orig_indexes_iota] f' [(Shape [n'], 1, indexes_dst)]
 
-  -- new_bins = map (\i -> bins[i]) indexes
+  -- new_bins = map (\i -> inds[i]) new_indexes
   i <- newParam "i" $ Prim int64
   new_bins_body <- runBodyBuilder . localScope (scopeOfLParams [i]) $ do
     body <- letSubExp "body" $ BasicOp $ Index inds (fullSlice (Prim int64) [DimFix (Var (paramName i))])     
@@ -225,7 +224,11 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
   new_bins <- letExp "new_bins" $ Op $ Screma n' [new_indexes] $ ScremaForm [][] new_bins_lambda
 
 
--- sorted_is = loop (new_bins) for i < 32 do radix_sort_step(new_bins, i)
+  -- [sorted_is, sorted_bins] = 
+  --   loop over [new_indexes, new_bins] for i < 6 do 
+  --     bits = map (\ind_x -> (ind_x >> i) & 1) new_bins
+  --     newidx = partition2 bits (iota n')
+  --     [map(\i -> new_indexes[i]) newidx, map(\i -> new_bins[i]) newidx]
   i2 <- newVName "i2"
 
   indexesForLoop <- newVName "new_indexes_rebound"
@@ -284,19 +287,23 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
   let [sorted_is, sorted_bins] = loop_res
 
 
--- new_vals = map(\i -> vs[i]) sorted_is
+-- sorted_vals = map(\i -> vs[i]) sorted_is
   val_idx <- newParam "val_idx" $ Prim int64
-  new_vals_body <- runBodyBuilder . localScope (scopeOfLParams [val_idx]) $ do
+  sorted_vals_body <- runBodyBuilder . localScope (scopeOfLParams [val_idx]) $ do
     body <- letSubExp "body" $ BasicOp $ Index vs (fullSlice (Prim int64) [DimFix (Var (paramName val_idx))])     
     resultBodyM [body]
-  let new_vals_lambda = Lambda [val_idx] new_vals_body [Prim int64]
-  new_vals <- letExp "new_vals" $ Op $ Screma n' [sorted_is] $ ScremaForm [][] new_vals_lambda
+  let sorted_vals_lambda = Lambda [val_idx] sorted_vals_body [Prim int64]
+  sorted_vals <- letExp "sorted_vals" $ Op $ Screma n' [sorted_is] $ ScremaForm [][] sorted_vals_lambda
 
   let trueSE  = Constant $ IntValue $ intValue Int8 (1 :: Integer)
   let falseSE = Constant $ IntValue $ intValue Int8 (0 :: Integer)
 
-  -- map (\(bin, index) -> if sorted_bins[index] == sorted_bins[index-1] then 0 else 1) sorted_bins iota
-  -- Make flag array
+  -- final_flags = 
+  --   map (\(bin, index) -> 
+  --       if sorted_bins[index] == sorted_bins[index-1] 
+  --       then 0 
+  --       else 1
+  --     ) sorted_bins (iota n')
   iota_n' <- letExp "iota_n'" $ BasicOp $ Iota n' zeroSubExp oneSubExp Int64
   bin <- newParam "bin" $ Prim int64
   index <- newParam "iot_n'" $ Prim $ int64
@@ -316,7 +323,6 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
             (CmpEq $ IntType Int64)
             (eSubExp $ Var prev_elem)
             (eSubExp $ Var $ paramName bin)
-
     eBody
       [
         eIf
@@ -334,30 +340,28 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
   final_flags <- letExp "final_flags" $ Op $ Screma n' [sorted_bins, iota_n'] $ ScremaForm [][] mk_flag_lambda
 
 
-  ---- Forward segmented exlusive scan in one array, reverse segmented exlusive scan in another.
-  seg_scan_exc <- mkSegScanExc f nes n' new_vals final_flags
+  -- fwd_scan = sgmScanExc op sorted_vals final_flags
+  seg_scan_exc <- mkSegScanExc f nes n' sorted_vals final_flags
   fwd_scan <- letTupExp "fwd_scan" $ Op seg_scan_exc
   let [_, lis] = fwd_scan
 
-  ---- Reverse segmented exculsive scan. Reverse flags and vals.
-  -- rev_vals = reverse new_vals
-  rev_vals <- eReverse new_vals
+  -- rev_vals = reverse sorted_vals
+  rev_vals <- eReverse sorted_vals
   -- final_flags_rev = reverse final_flags
   final_flags_rev <- eReverse final_flags
 
+
   -- Need to fix flags after reversing
-  -- rev_flags = map (\ind -> if ind == 0 then 1 else rev[ind-1])
+  -- rev_flags = map (\ind -> if ind == 0 then 1 else rev_final_flags[ind-1]) (iota n')
   i' <- newParam "i" $ Prim int64
   rev_flags_body <- runBodyBuilder . localScope (scopeOfLParams [i']) $ do
     idx_minus_one <- letSubExp "idx_minus_one" $ BasicOp $ BinOp (Sub Int64 OverflowUndef) (Var $ paramName i') (intConst Int64 1)
     prev_elem <- letSubExp "prev_elem" $ BasicOp $ Index final_flags_rev (fullSlice (Prim int64) [DimFix idx_minus_one]) 
-    
     let firstElem =
           eCmpOp
             (CmpEq $ IntType Int64)
             (eSubExp $ Var $ paramName i')
             (eSubExp zeroSubExp)
-
     eBody
       [
         eIf
@@ -368,7 +372,8 @@ diffGeneralRBI pat aux (n, [inds, vs]) (Shape [wsubexp],nes, orig_dst, f) m = do
   let rev_flags_lambda = Lambda [i'] rev_flags_body [Prim int8]
   rev_flags <- letExp "rev_flags" $ Op $ Screma n' [iota_n'] $ ScremaForm [][] rev_flags_lambda
 
-  -- Run segmented scan on reversed arrays.
+
+  -- rev_scan = sgmScanExc op rev_vals rev_flags
   rev_seg_scan_exc <- mkSegScanExc f nes n' rev_vals rev_flags
   rev_scan <- letTupExp "rev_scan" $ Op rev_seg_scan_exc
   let [_, ris] = rev_scan
