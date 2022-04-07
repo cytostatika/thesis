@@ -121,9 +121,9 @@ vjpSOAC _ pat aux (Hist n arrs [hist_add] f) m
       diffMinMaxRBI pat aux (n, arrs) (w, rf, orig_dst, ne, bop) m
 vjpSOAC _ pat aux (Hist n arrs [inner_hist] f) m 
   | isIdentityLambda f,
-    HistOp w _ [orig_dst] _ _ <- inner_hist
+    HistOp w _ [orig_dst] nes lam <- inner_hist
     = 
-      diffGeneralRBI pat aux (n, arrs) (w, orig_dst) m
+      diffGeneralRBI pat aux (n, arrs) (w, nes, orig_dst, lam) m
 vjpSOAC _ _ _ soac _ =
   error $ "vjpSOAC unhandled:\n" ++ pretty soac
  
