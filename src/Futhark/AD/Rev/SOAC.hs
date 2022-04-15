@@ -107,23 +107,23 @@ vjpSOAC _ pat aux (Hist n arrs [hist_add] f) m
     Just (Addition _) <- isBinOpTypeLam add_lam 
     = 
       diffPlusRBI pat aux (n, arrs, f) (w, rf, orig_dst, ne, add_lam) m
-vjpSOAC _ pat aux (Hist n arrs [hist_add] f) m 
-  | isIdentityLambda f,
-    HistOp w rf [orig_dst] [ne] mul_lam <- hist_add,
-    Just (Multiplication bop) <- isBinOpTypeLam mul_lam 
-    = 
-      diffMulRBI pat aux (n, arrs) (w, rf, orig_dst, ne, mul_lam, bop) m
+-- vjpSOAC _ pat aux (Hist n arrs [hist_add] f) m 
+--   | isIdentityLambda f,
+--     HistOp w rf [orig_dst] [ne] mul_lam <- hist_add,
+--     Just (Multiplication bop) <- isBinOpTypeLam mul_lam 
+--     = 
+--       diffMulRBI pat aux (n, arrs) (w, rf, orig_dst, ne, mul_lam, bop) m
 vjpSOAC _ pat aux (Hist n arrs [hist_add] f) m 
   | isIdentityLambda f,
     HistOp w rf [orig_dst] [ne] bop_lam <- hist_add,
     Just (MinMax bop) <- isBinOpTypeLam bop_lam 
     = 
       diffMinMaxRBI pat aux (n, arrs) (w, rf, orig_dst, ne, bop) m
-vjpSOAC _ pat aux (Hist n arrs [inner_hist] f) m 
+vjpSOAC ops pat aux (Hist n arrs [inner_hist] f) m 
   | isIdentityLambda f,
     HistOp w _ [orig_dst] nes lam <- inner_hist
     = 
-      diffGeneralRBI pat aux (n, arrs) (w, nes, orig_dst, lam) m
+      diffGeneralRBI ops pat aux (n, arrs) (w, nes, orig_dst, lam) m
 vjpSOAC _ _ _ soac _ =
   error $ "vjpSOAC unhandled:\n" ++ pretty soac
  
