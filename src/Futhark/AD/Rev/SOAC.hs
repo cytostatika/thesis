@@ -12,15 +12,11 @@ import Futhark.AD.Rev.Monad
 import Futhark.AD.Rev.Reduce
 import Futhark.AD.Rev.Scan
 import Futhark.AD.Rev.Scatter
-import Futhark.AD.Rev.RBI
 import Futhark.Analysis.PrimExp.Convert
 import Futhark.Builder
 import Futhark.IR.SOACS
 import Futhark.Tools
 import Futhark.Util (chunks)
-
-data BinOpType = Addition BinOp | Multiplication BinOp | MinMax BinOp
-
 
 -- We split any multi-op scan or reduction into multiple operations so
 -- we can detect special cases.  Post-AD, the result may be fused
@@ -28,7 +24,7 @@ data BinOpType = Addition BinOp | Multiplication BinOp | MinMax BinOp
 splitScanRed ::
   VjpOps ->
   ([a] -> ADM (ScremaForm SOACS), a -> [SubExp]) ->
-  (Pat, StmAux (), [a], SubExp, [VName]) ->
+  (Pat Type, StmAux (), [a], SubExp, [VName]) ->
   ADM () ->
   ADM ()
 splitScanRed vjpops (opSOAC, opNeutral) (pat, aux, ops, w, as) m = do
@@ -42,13 +38,13 @@ splitScanRed vjpops (opSOAC, opNeutral) (pat, aux, ops, w, as) m = do
       onOps _ _ _ = m
   onOps ops pat_per_op as_per_op
 
-commonSOAC :: Pat -> StmAux () -> SOAC SOACS -> ADM () -> ADM [Adj]
+commonSOAC :: Pat Type -> StmAux () -> SOAC SOACS -> ADM () -> ADM [Adj]
 commonSOAC pat aux soac m = do
   addStm $ Let pat aux $ Op soac
   m
   returnSweepCode $ mapM lookupAdj $ patNames pat
 
-vjpSOAC :: VjpOps -> Pat -> StmAux () -> SOAC SOACS -> ADM () -> ADM ()
+vjpSOAC :: VjpOps -> Pat Type -> StmAux () -> SOAC SOACS -> ADM () -> ADM ()
 vjpSOAC ops pat aux soac@(Screma w as form) m
   | Just reds <- isReduceSOAC form,
     length reds > 1 =
@@ -90,74 +86,5 @@ vjpSOAC ops pat _aux (Screma w as form) m
     vjpStm ops mapstm $ vjpStm ops redstm m
 vjpSOAC ops pat aux (Scatter w lam ass written_info) m =
   vjpScatter ops pat aux (w, lam, ass, written_info) m
-vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m 
-  | isIdentityLambda f,
-    HistOp w rf [orig_dst] [ne] add_lam <- hist_add,
-    Just (Addition _) <- isBinOpTypeLam add_lam 
-    = 
-      diffPlusRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, add_lam) m
--- vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m 
---   | isIdentityLambda f, <- Change to deal with multiplication
---                        maybe make it general so it simply calls vjpSOAC with the identity lambda and real arrs
---                        And thus making it support all operation
---     HistOp w rf [orig_dst] [ne] add_lam <- hist_add,
---     Just _ <- isAddTowLam add_lam 
---     = 
---       diffplusRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, add_lam) m
-vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m 
-  | isIdentityLambda f,
-    HistOp w rf [orig_dst] [ne] mul_lam <- hist_add,
-    Just (Multiplication bop) <- isBinOpTypeLam mul_lam 
-    = 
-      diffMulRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, mul_lam, bop) m
-vjpSOAC ops pat aux (Hist n arrs [hist_add] f) m 
-  | isIdentityLambda f,
-    HistOp w rf [orig_dst] [ne] bop_lam <- hist_add,
-    Just (MinMax bop) <- isBinOpTypeLam bop_lam 
-    = 
-      diffMinMaxRBI ops pat aux (n, arrs, f) (w, rf, orig_dst, ne, bop_lam, bop) m
-
 vjpSOAC _ _ _ soac _ =
   error $ "vjpSOAC unhandled:\n" ++ pretty soac
-
-
-isBinOpTypeLam :: Lambda -> Maybe BinOpType
-isBinOpTypeLam lam = isSpecOpLam isAddOp $ filterMapOp lam
-  where
-    isAddOp bop@(Add _ _) = Just $ Addition bop
-    isAddOp bop@(FAdd _) = Just $ Addition bop
-    isAddOp bop@(Mul _ _) = Just $ Multiplication bop
-    isAddOp bop@(FMul _) = Just $ Multiplication bop
-    isAddOp bop@(SMin _) = Just $ MinMax bop
-    isAddOp bop@(UMin _) = Just $ MinMax bop
-    isAddOp bop@(FMin _) = Just $ MinMax bop
-    isAddOp bop@(SMax _) = Just $ MinMax bop
-    isAddOp bop@(UMax _) = Just $ MinMax bop
-    isAddOp bop@(FMax _) = Just $ MinMax bop
-    isAddOp _ = Nothing
-    filterMapOp (Lambda [pa1, pa2] lam_body _)
-      | [r] <- bodyResult lam_body,
-        [map_stm] <- stmsToList (bodyStms lam_body),
-        (Let pat _ (Op scrm)) <- map_stm,
-        (Pat [pe]) <- pat,
-        (Screma _ [a1, a2] (ScremaForm [] [] map_lam)) <- scrm,
-        (a1 == paramName pa1 && a2 == paramName pa2) || (a1 == paramName pa2 && a2 == paramName pa1),
-        resSubExp r == Var (patElemName pe) =
-        filterMapOp map_lam
-    filterMapOp other_lam = other_lam
-
--- Pattern Matches special lambda cases:
---   plus, multiplication, min, max, which are all commutative.
--- Succeeds for (\ x y -> x binop y) or (\x y -> y binop x).
-isSpecOpLam :: (BinOp -> Maybe BinOpType) -> Lambda -> Maybe BinOpType
-isSpecOpLam isOp lam =
-  isRedStm
-    (map paramName $ lambdaParams lam)
-    (bodyResult $ lambdaBody lam)
-    (stmsToList $ bodyStms $ lambdaBody lam)
-  where
-    isRedStm [a, b] [r] [Let (Pat [pe]) _aux (BasicOp (BinOp op x y))] =
-      if (resSubExp r == Var (patElemName pe)) && ((x == Var a && y == Var b) || (x == Var b && y == Var a))
-        then isOp op
-        else Nothing
-    isRedStm _ _ _ = Nothing

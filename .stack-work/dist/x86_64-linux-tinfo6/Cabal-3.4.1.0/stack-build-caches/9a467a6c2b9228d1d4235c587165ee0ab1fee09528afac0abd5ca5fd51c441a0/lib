@@ -1,0 +1,666 @@
+/home/gilli/thesis/src/Language/Futhark/Syntax.hs:
+  hash: 75ad78f048dcb545c83587baf011dadc0d53bb130e0a0664baabfea9de976579
+/home/gilli/thesis/src/Futhark/Internalise/LiftLambdas.hs:
+  hash: df18c0f1dfc1efde709d3ea4728b4e2192575ff9dc511b493b39597f5f24f03a
+/home/gilli/thesis/docs/error-index.rst:
+  hash: 8ae2b4eb04184455245dbd9f64aedb321fa9b3ede8ab71fbc257c0d751b25758
+/home/gilli/thesis/rts/javascript/server.js:
+  hash: ef7765c75ae9f4de8ef81bce2b7a5977bf28574e492a4a62a372a10b62c4d325
+/home/gilli/thesis/src/Futhark/IR/GPU/Simplify.hs:
+  hash: 7b7392a2a2a1ad66f3392a337d56f1a00a500b00d6ed0dd1b4af30591bf4b50e
+/home/gilli/thesis/docs/man/futhark-pkg.rst:
+  hash: fb4a0de399005a152b2d3ea2a16739076327ee398485a78b0f9fe4fde75f1fe5
+/home/gilli/thesis/src/Futhark/Optimise/TileLoops.hs:
+  hash: d6d911e371c4a7bbf225cbc9fc9b4a558a67f2289d1a4151cc05eac019a0d992
+/home/gilli/thesis/src/Futhark/Internalise/TypesValues.hs:
+  hash: ffa426833ca8de8f62b191b4229e90a69ba9700fba3a265de635ceedc9fa7859
+/home/gilli/.stack/programs/x86_64-linux/ghc-tinfo6-9.0.2/lib/ghc-9.0.2/include/ghcautoconf.h:
+  hash: d8a5d038cc2e9af97f52f9e5ebe676e87a4d06feec7916afe0655de681793717
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/PyOpenCL.hs:
+  hash: 88c8d060c70ea5c0739f27e105b440c3a841ebf5dbaa0010a98a30053bfec864
+/home/gilli/thesis/docs/man/futhark-python.rst:
+  hash: ea5c173ac49cb4cca3559565ebd5a2d8f41ccb0d8281ca726779af788009bf57
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Terms/Pat.hs:
+  hash: 661857e8ee7c195a8157d562c7c4fc3b31cad0f6bdca73be7edaff03b411465c
+/home/gilli/thesis/src/Futhark/Doc/Generator.hs:
+  hash: 3628f35127e873c70775d72413058f450f57956e7fced4f741ead2c95d4a537f
+/home/gilli/thesis/prelude/soacs.fut:
+  hash: b9c4a724c0209bab65edf28cd3c07f19eb3dc4b7a7e62943a24aa49a1a7783b1
+/home/gilli/thesis/src/Futhark/Test/Spec.hs:
+  hash: 2c8dfee4efe8b6edb6f5f8b4180bc2f52ae405fb4cc067ba164d7014f7c93efa
+/home/gilli/thesis/src/Language/Futhark/TypeChecker.hs:
+  hash: 629dcb989a9263e7acf364da290777037409b67f13de71938331b733857cd535
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/SequentialC.hs:
+  hash: fa105b628b88deff9b8e339894a3c2fe3862214b7a9c7e6a31434ddb102772e3
+/home/gilli/thesis/rts/c/util.h:
+  hash: 5cbbb35655aad5dd5e89cfbe640f391878d5f7f8e8c33a50f362748154b4f467
+/home/gilli/thesis/src/Futhark/Analysis/LastUse.hs:
+  hash: 723a6f36eca53106008dbcc06e8606897eafd6d398fdfb5f0d4b52356e120f02
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/DistributeNests.hs:
+  hash: 048288f99c90033f2781e7d8af429d4b7bc866469d9749a84bc880b517e25dfb
+/home/gilli/thesis/src/Futhark/Analysis/PrimExp/Simplify.hs:
+  hash: d7a367e4c92edee691586b342c43b56f328411a8fb6060b59692518a2821314e
+/home/gilli/thesis/src/Futhark/IR/Prop/Scope.hs:
+  hash: 2cc15889f35d2b8b06d5fc0bf0ed9d2a365830d9e54b40ad4958c6064f17f393
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericWASM.hs:
+  hash: 2ac2137d48f1f2d30d17e65a2279e7b2b259c3c0029cbfd1837ae1740a6024fc
+/home/gilli/thesis/src/Futhark/IR/Primitive/Parse.hs:
+  hash: ec2d106bfa30b0dcd64fcc57fdd1304f7d35ca8932a5c7b4a0f84f1465251c12
+/home/gilli/thesis/src/Futhark/CodeGen/ImpCode.hs:
+  hash: 4361061bb118a76351d1766f16b6ab7888a19d143093f9fc4952fccca1699721
+/home/gilli/thesis/src/Futhark/IR/Prop/TypeOf.hs:
+  hash: 5616edc44f83d7dbde1531c54f54d11c0ab69c5474dfe16c2f03d5c5e18c7f64
+/home/gilli/thesis/src/Futhark/IR/MCMem.hs:
+  hash: 0101afa977930ae9c6fb620c1ba9dd2395daefa6b02329fef51c90a4ed48169e
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/BlockedKernel.hs:
+  hash: 2d470ca8d0f23de93b97a64e7893569d3576f5ad74760f17fed842e518ec1be9
+/home/gilli/thesis/rts/c/tuning.h:
+  hash: 26e7941aaddda683b4fe3f06e929d16dcaf1b007e5d7fa9dca227d1ec70d50d9
+/home/gilli/thesis/src/Futhark/IR/Traversals.hs:
+  hash: b69e581595a4d51b96a277c469197cc5eaece1ab2a50758c2455f08266b35945
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/SimpleRep.hs:
+  hash: 93b9ffce2a5dd20c405846d43e82382cec0cf5c111a62a3d5d2d72bce02459dc
+/home/gilli/thesis/src/Futhark.hs:
+  hash: 71b06c759a3a826ba558671d7d07ba1f7c1eb4c6b4a58bd78fa4d7bbf794de43
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/ISRWIM.hs:
+  hash: b7d3e40b412b3f73454f2ed1cbddde5a17fd02e91058a2222c99c5da4451627a
+/home/gilli/thesis/src/Futhark/CLI/Datacmp.hs:
+  hash: 49367bf0e1770776f4da27f59de7946b33ac3765257d9d4d990492d0b55cfb8e
+/home/gilli/thesis/src/Futhark/CLI/Literate.hs:
+  hash: b6d68bfa4e391cfb35497d7dfc1d666deee4425617ce7f4967a4aede32274ebc
+/home/gilli/thesis/src/Futhark/Util/Log.hs:
+  hash: cc540934316a67a1c6244d344eaee4e26527693864842bd055f08cc43d2bbaac
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/Transpose.hs:
+  hash: 9e2df57d195c56f12ec2befdacb57c9c7e3a2cf96f33032da04999f26734baa7
+/home/gilli/thesis/docs/conf.py:
+  hash: 0d7114081eb30583bbc3b841cea7c6acb129fd7ba124c3d96e0a64611329216a
+/home/gilli/thesis/src/Language/Futhark/Prelude.hs:
+  hash: 1f56365398b6193c36c2040b400fc44a619cd96eb8b37d0fe2f40eac80496851
+/home/gilli/thesis/src/Futhark/Optimise/DoubleBuffer.hs:
+  hash: 32aaa38805a96d2a6edb671fe814d9e216a131e7a24c829fd046446c0896ab11
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/CCUDA/Boilerplate.hs:
+  hash: 5b8180d95e4bc338822c207ff7ec4bf6445326be7e807ff8bdcc0a1eb073a485
+/home/gilli/thesis/src/Language/Futhark/Parser.hs:
+  hash: 4f23a76e60e700572303a5b65b6d8339fc9678570f5c8d739ecc5c0a78f37109
+/home/gilli/thesis/src/Futhark/IR/Prop/Names.hs:
+  hash: b73d0bb3a3d9a67c3a093c4a497b8717dba7c6b41d9b89d7c81dbd02303acd4f
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Transpose.hs:
+  hash: 806fc3c61216e69d9abb096c901c1b611229dcc7149791526d6e6d8701a968b3
+/home/gilli/thesis/src/Futhark/CLI/OpenCL.hs:
+  hash: 205a69863cdf28d528daa467ac9195cd7233c88da127f5fe01a52de270cd7207
+/home/gilli/thesis/src/Futhark/Optimise/TileLoops/Shared.hs:
+  hash: 8bdcc83caa30c799d6ff2eac9eeb8dd411a06d0c27abfd795a872f13608c0c7f
+/home/gilli/thesis/docs/man/futhark-multicore.rst:
+  hash: b730a21cb9107106a5b0a9e789d1478f6e28f6d0648a4b8914ba0a2d5ff35dda
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rep.hs:
+  hash: 147008b83d30d60f2b5b4c21097b7d6de9142a08cf5073c61396f278358f6c55
+/home/gilli/thesis/src/Futhark/CodeGen/ImpCode/GPU.hs:
+  hash: e41cd9ac30d1bfd5aacfacac6bf7a85da165bf73217214d65a50ed4c895da2f2
+/home/gilli/thesis/src/Futhark/Optimise/InPlaceLowering/SubstituteIndices.hs:
+  hash: 8ad474a40aa5e14b8e476b38754c30333f9afbd21baf619dcd02747df8dab744
+/home/gilli/thesis/docs/usage.rst:
+  hash: e4e2501f75a3ac06643d67f835ed60a82be012d57c44d1742dae8971a58bc19c
+/home/gilli/thesis/src/Futhark/IR/Mem/IxFun.hs:
+  hash: 23e6c1c31b3efb2501972280c2009be325bdd92fc145785432dd9959b2c10337
+/home/gilli/thesis/src/Futhark/IR/MC/Op.hs:
+  hash: ea42ce35e0e3dd32b728713bc6be30a4651b6b5a6567ef0178c61869c8ad8b20
+/home/gilli/thesis/src/Futhark/Bench.hs:
+  hash: aacdf3c3214713408101ee982ab400b68ae58e71b372ebab10cb40797fd05460
+/home/gilli/thesis/src/Futhark/CodeGen/ImpCode/Multicore.hs:
+  hash: 9bc0e500b09b5d99f268922df5391a226441e97d10bff7ad84ebef0407e14f8b
+/home/gilli/thesis/src/Futhark/IR/SegOp.hs:
+  hash: 53a798c92ae945c42b2ec7314d6643579de2379efde75eaaf284d889016855a4
+/home/gilli/thesis/src/Futhark/CLI/C.hs:
+  hash: 4090bfef52f2548a7ac50494f9d7256bc9ad4e754df0e81d7e60c7595e5812ef
+/home/gilli/thesis/src/Futhark/IR/MC.hs:
+  hash: 02987a2fff1c60283256abd4e25802f1bc046210ee0d25cf7106e7f85765601e
+/home/gilli/thesis/prelude/zip.fut:
+  hash: 63c5a70d76b6c32b4de4a73a7d3f5bc3ff0de49221757f09bd0fe94c38d7ddd4
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/CUDA.hs:
+  hash: 7efac62a0308f9c1a4e7fbcb8f6cca9ab722b0c4c6ff9246ad4480989a66646d
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Modules.hs:
+  hash: 165342fce7d7c98f33ce44716df984f7e3119b86bc7f9542a65b25c8a70788d3
+/home/gilli/thesis/src/Futhark/Optimise/MemoryBlockMerging.hs:
+  hash: b94a9dd4b676d72a12171495faddafde0d02828b613bc3d074655c2235aed26b
+/home/gilli/thesis/src/Futhark/IR/Pretty.hs:
+  hash: ee2a470445ce0bb12c8998453a6babe04537a42b5b8264525eaf82a61f0ac05e
+/home/gilli/thesis/src/Futhark/Version.hs:
+  hash: f909c4aab5bdbe92f23b00d917f0c43e704f18885d08eb50b4b232de73e5cb52
+/home/gilli/thesis/docs/man/futhark-pyopencl.rst:
+  hash: 06981a7f15cc384e55f2c8bff72b9d8f70a1a38827147a60732c16db23cdde07
+/home/gilli/thesis/docs/man/futhark-bench.rst:
+  hash: 4c007df7e21000f2004096bd4cade7be78427c0cb61afcb75337b1961d4fd16b
+/home/gilli/.stack/programs/x86_64-linux/ghc-tinfo6-9.0.2/lib/ghc-9.0.2/include/ghcversion.h:
+  hash: b6281754d6dc5c5462a97f01fbffb615a7d9f031384e8e8250fce23e8f43f266
+/home/gilli/thesis/src/Futhark/IR/Prop/Patterns.hs:
+  hash: b4e60a6562da37fbc051645dc3c7f778c7f304e665f599502d29e21e8ec8b6e5
+/home/gilli/thesis/src/Futhark/IR/Prop/Types.hs:
+  hash: 33dc5d65feb64ac39972cecf13f229b68dddcf791e1e08478593480db1c63989
+/home/gilli/thesis/src/Futhark/Internalise/Bindings.hs:
+  hash: c3b9be573b3e9a6edd9d5679569443ec0a55503bae1b1756a3f5a7f3b18455b4
+/home/gilli/thesis/src/Futhark/IR/Syntax.hs:
+  hash: 97bd39ec5cc36b91dbdb0ed8a443f1b833dbed5aa823a1585bfee6d6ceff3e76
+/home/gilli/thesis/src/Futhark/CLI/Python.hs:
+  hash: 4db952babea2cb08821aa9df4f97503c9f127f73733bbf9e463c46a943c004be
+/home/gilli/thesis/src/Futhark/Util/Table.hs:
+  hash: 6d1bc37d0f6b8b139374e2222d5b456d954d90032fcfa92a47d5dbbe08752be0
+/home/gilli/thesis/rts/python/opencl.py:
+  hash: 3708e4a1ea0caa33019252d63d4139649ea0270967fa094658e54b0c41c2010f
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericC/CLI.hs:
+  hash: a878fa078351d8595a9dc8db7c9f4f3a7d879aca429ec75985fc6fb0dfa28d85
+/home/gilli/thesis/src/Futhark/Actions.hs:
+  hash: 22f006119d65a44504399ffa967bd61aae6231fb63532a69a58a73731ff4d67b
+/home/gilli/thesis/src/Futhark/Transform/CopyPropagate.hs:
+  hash: 0254092d9be9f710798ab906c725c952acc1a5b141146bee40cb3cd86307e047
+/home/gilli/thesis/rts/c/server.h:
+  hash: 1d6af4eb0f040d7fb5584a1ede9617c54a7aaace57514c833587761a236bad84
+/home/gilli/thesis/docs/man/futhark.rst:
+  hash: 7ff0bb8393299eb9222e2e9d5b13e6a135675c0801bce29d2627c81ea31a8757
+/home/gilli/thesis/src/Futhark/Construct.hs:
+  hash: 150c46dbc917434b652540b6357d7413d3d84981e76451810b9a4b71392ba932
+/home/gilli/thesis/src/Futhark/Util/Pretty.hs:
+  hash: d6628dae4131bd9e53ccc807c9a73d017d6c0304e2e618346ca8eb0d365cb8d4
+/home/gilli/thesis/docs/man/futhark-autotune.rst:
+  hash: 3ae82d527444a8fe3f20419bab4042122aa0fd8b650cbbd41a5692e70f038f66
+/home/gilli/.stack/programs/x86_64-linux/ghc-tinfo6-9.0.2/lib/ghc-9.0.2/include/ghcconfig.h:
+  hash: 03f4611ae97decc9e8c76c212bf7886d003b29d5c62b43fee6623a799f6e5fdf
+/home/gilli/thesis/src/Futhark/Optimise/Unstream.hs:
+  hash: 8e5d7bbf27b82a6224ebea0855c95453d1b24b9130399eeb35ac928f800dc687
+/home/gilli/thesis/src/Language/Futhark/Prop.hs:
+  hash: 4c1414abd5784d5cf36c9ed6b86cd011512689a1d99cdb0b222bf3f4bb8f324a
+/home/gilli/thesis/src/Futhark/CodeGen/RTS/Python.hs:
+  hash: f6c8b5b87f700d6cca8155e2a1537289ec7e999fe96479632421ed351e309418
+/home/gilli/thesis/rts/c/scalar_f16.h:
+  hash: 8d79fab3259dc51772259a9f8d83bced96cd9209531023c4e6e631c290b83916
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/PyOpenCL/Boilerplate.hs:
+  hash: a1d03f834d01e7efd079d31ffcd52bce2e9adf6b963374e01858f1968f43ba4f
+/home/gilli/thesis/src/Futhark/Compiler/Program.hs:
+  hash: 03d6c291203762087d03abb3cfd58b24a9715fef601eb7ec89dc67e0530642ba
+/home/gilli/thesis/src/Language/Futhark/Parser/Lexer.x:
+  hash: a2f983a520a0bf232842463768b9ceafe65adefe18f486b982ca2527b345eb32
+/home/gilli/thesis/src/Futhark/Pkg/Solve.hs:
+  hash: 819fb061337e365318a7dc59e983ccda7f2c49efe237402dcb3d28b65a5637c3
+/home/gilli/thesis/src/Futhark/Internalise.hs:
+  hash: 6b33c0377df3f39f81a0b6753751fdd9287a05b8cd4291c852b4c80c19af244a
+/home/gilli/thesis/rts/python/scalar.py:
+  hash: cbb5332bfdd55f80d54bb869da27a7991f0f3d9b12b634f123d99498de22a252
+/home/gilli/thesis/src/Futhark/Pkg/Types.hs:
+  hash: 606cad546e5299735371c2bd10b02fc1fc35b9bcc3a062c65230944ce4337691
+/home/gilli/.stack/programs/x86_64-linux/ghc-tinfo6-9.0.2/lib/ghc-9.0.2/include/ghcplatform.h:
+  hash: db0a8a02f1e5e2f839f55f4bbf2d0489df2d2d74b257bbc38c788ce040422c4e
+/home/gilli/thesis/src/Futhark/Optimise/InPlaceLowering.hs:
+  hash: ebb1ab086e597df32fbdb7a110ae30f1bd87caa23874a6f9649329903412d8ac
+/home/gilli/thesis/prelude/array.fut:
+  hash: 765e3ee211e63950b75a911887350897d46d3053263d571a37ee5db1ed1f63f6
+/home/gilli/thesis/prelude/STYLE.md:
+  hash: 67e103544e53f3ab1e240169d4ae5fda4ec66f7e7669b3e74f92f6e82bcb9664
+/home/gilli/thesis/rts/c/timing.h:
+  hash: ca555a8c8487cd5127e94e3a5120a3fa52cff1122dfe5f2ad030308b4afa4ea7
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/SequentialC/Boilerplate.hs:
+  hash: fff7e28f8d908b16162f4d90a21e848f2dec3e5631f7d7aa685b0aedba43eb2c
+/home/gilli/thesis/src/Futhark/Optimise/MemoryBlockMerging/GreedyColoring.hs:
+  hash: b5cc44cd52f0df3ac867b6c811b08f3f08168d339d61af4b18956e612177b3a3
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Types.hs:
+  hash: cdef4371e684cfcb9489ec8f4a3108a90194e77cf3c3920bc882fe2689970af0
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rules/ClosedForm.hs:
+  hash: f6c8d0b3ad0a6b81fae93cd590ee7aa7358c1823906a90b740e223ea082755ac
+/home/gilli/thesis/rts/c/half.h:
+  hash: 392fb758acd38de4131612d75fa17ddffeab1a9d3b5c96f12dafde6a244e2359
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU.hs:
+  hash: 555f59eba5231aff1672033a511703fd710f06b6ddbd24856195c51a0a87b86d
+/home/gilli/thesis/docs/man/futhark-repl.rst:
+  hash: 5bba0d9298e49f5ed21e3e3e53f12c357866b15e84dee7903bc1290cf38ea79c
+/home/gilli/thesis/src/Futhark/Transform/FirstOrderTransform.hs:
+  hash: 0623cda715ee121d35b9a259adf831330c4885c672224da759430cc6a8d0cf4a
+/home/gilli/thesis/src/Futhark/IR/GPUMem.hs:
+  hash: a7110fcee8b69808c22e01538faa386029ab4dd4599ecfe59e543a55f5f736f9
+/home/gilli/thesis/src/Futhark/CLI/PyOpenCL.hs:
+  hash: 9deb277f8d0d44083e5b4324956237d7ed6efee5337a3dbcf8e5d43a6bb97a64
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/SequentialPython.hs:
+  hash: 01f789c4e5fe080a678e94d611ab6a645270449f32974afbbafec8628df3e14f
+/home/gilli/thesis/docs/package-management.rst:
+  hash: fa4b64ef62f754937fe10cb1cf702b6b218d913cbf0e156d6bb13e110b547896
+/home/gilli/thesis/src/Futhark/CodeGen/SetDefaultSpace.hs:
+  hash: 7f61686e17493ddc8d617e98ade2524a27f57d5fc4eaa153ce1c149eb878e045
+/home/gilli/thesis/docs/js-api.rst:
+  hash: d7dccd31349cd174272c31b3716b8dfaa64d9f801c89ca5f5c40cd9718769375
+/home/gilli/thesis/src/Futhark/Compiler.hs:
+  hash: 09ba4bae7e3b4d5658134f8301d10d40f412fa7b25d963990f3007e177014c4a
+/home/gilli/thesis/rts/c/chaselev.h:
+  hash: 9fa34c4b509ea6db4d1000a881aa065fd13fc2361919662ab83a119620a38124
+/home/gilli/thesis/.git/HEAD:
+  hash: 28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80
+/home/gilli/thesis/src/Futhark/IR.hs:
+  hash: 9b5ec00beff9aea813931f00691d53748f2dfb3a6ac1dbc485d55135e0498343
+/home/gilli/thesis/src/Futhark/CLI/MulticoreWASM.hs:
+  hash: e91319f5bc4b6d3660934212eb195544e79002173a66d2b5c74954880b036500
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Multicore/SegHist.hs:
+  hash: ca70c14caeeb9c5d764828875f1df587a7433f3ee9ee7c9ae597ce552ff98de8
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/StreamKernel.hs:
+  hash: f2f0acf6206dc047c86e0f78459d85c2d60e5b9f50cd5a94d5768ccc556006f2
+/home/gilli/thesis/rts/c/errors.h:
+  hash: e3bbdab0e9a5fd0dc79dceda138e8ae82bfb7081539afd574de6d2df390c51dc
+/home/gilli/thesis/docs/man/futhark-cuda.rst:
+  hash: 7970505a83c512d48d53742778962d5e42f91e61dc655eab0ae1fa1aa9ba6f3a
+/home/gilli/thesis/src/Futhark/Internalise/Lambdas.hs:
+  hash: 767ea69bfa904e41f16f0f5ff6e4388b67a8da871e5f17bd3826af09e5cce4e7
+/home/gilli/thesis/rts/c/lock.h:
+  hash: c9021f90779d09ea65c707234f0809e62080ba7bc6b998744362b6d7ac7786a4
+/home/gilli/thesis/src/Futhark/Analysis/CallGraph.hs:
+  hash: 0490c88b6b4beaabb2b56c4e7f260e53543bd0584f31e5bb6be576ed60a3326f
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Multicore.hs:
+  hash: c50db045f27ae7af157ce8ba3db1b93acceab1bc4f94bd3420369829498eb2fe
+/home/gilli/thesis/src/Futhark/Pass/ExplicitAllocations/Seq.hs:
+  hash: 4a6303068115f62ff900091e7c30a6f2c02b587a96a6d0ba0a8909d539d256c7
+/home/gilli/thesis/src/Language/Futhark/Pretty.hs:
+  hash: 94b1329fc58bbb75bda59f1ee897968042cf849c1d6ef4967651a7899dbb13ea
+/home/gilli/thesis/src/Futhark/CodeGen/ImpCode/OpenCL.hs:
+  hash: 43336cdc37ab6ebbb2175ff8755a2e66c919637c83925972f17287dbb82be68e
+/home/gilli/thesis/rts/python/server.py:
+  hash: 007f12ecf73417c6660b9942dc0fbc309c26f01dfd1fa4d88f808e906193706e
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/SegHist.hs:
+  hash: cce3a9b41ba343b109a2c5a055a9bef1ba195421f98d2c9cab75b685607ac8e2
+/home/gilli/thesis/src/Futhark/CLI/Dataset.hs:
+  hash: 6f9481720fbf1e057d0aa7ac0e53c5ddccebe9dad45a02d4262cff8741a89b63
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/Intragroup.hs:
+  hash: 5123fabf3c5776f4256a8669d799533a5e41f0161de89db19fccc8fa061724f9
+/home/gilli/thesis/rts/c/opencl.h:
+  hash: 5f6911a0c56a713161595f0427d4ee3b71df802ea34e9ba99afb6efc5a064158
+/home/gilli/thesis/docs/man/futhark-c.rst:
+  hash: e1cf54ea8da11e9d7eac651744206ce203886c33d29647e27f6793d02c5701be
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Terms/DoLoop.hs:
+  hash: d3c3aa4086814deb4e31e590b4af57eb5c1d4ed8a520f60728a717c11b416c10
+/home/gilli/thesis/src/Futhark/Pass/FirstOrderTransform.hs:
+  hash: b3fc8737e0d83c6ea8f0f10b36c3f2c604f5cc5e1ce958de47a7e1e65c63d0c9
+/home/gilli/thesis/src/Futhark/Analysis/MemAlias.hs:
+  hash: dab35227c054f3943f81c9e8f7a0190dc41bcd5da1adc7f8fe843b9684202576
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/COpenCL.hs:
+  hash: 9ef3558c6975ceb9e67bb66fb403a626a785a9f85fb57bc9aa5a672e3ae57a7b
+/home/gilli/thesis/src/Futhark/Pass/ExplicitAllocations/GPU.hs:
+  hash: 12d716a7361b8fe1d31c7d8c6ddd37b279d644006f15f54ee83fc1471d6801e6
+/home/gilli/thesis/src/Futhark/IR/Prop/Aliases.hs:
+  hash: 4a7a65223f8df7fb02076874bede5fd12d9ca4faf7099495697ada276377660f
+/home/gilli/thesis/prelude/prelude.fut:
+  hash: 0712d1ee9ca68430211e494855eb4136c77a0e296c2b8e20af4ae9db9b9624df
+/home/gilli/thesis/src/Futhark/Analysis/PrimExp/Convert.hs:
+  hash: bcb4c0dcd2c83a5783c83ca071a6e40c91fee63dd490add4de6c568e9cfda0cd
+/home/gilli/thesis/docs/man/futhark-test.rst:
+  hash: 68d8005901d1f414e599889c5aef57ffb015119516fb15f5436d02536dd1e693
+/home/gilli/thesis/docs/versus-other-languages.rst:
+  hash: 53480e156f78e5ff96391fc0fc2de3be37a8a9310e063d7ca6e917802de19e13
+/home/gilli/thesis/src/Futhark/Internalise/Monad.hs:
+  hash: c35a5977f87ed79203fc066ae32eef4880c17c12827a3d033f72b5490a636f19
+/home/gilli/thesis/src/Futhark/Analysis/UsageTable.hs:
+  hash: 49c29d57091b7287f6de96f19511f5fed6fb66af031e972bf622700b0b920874
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/Interchange.hs:
+  hash: 46b19e46577c9895ab97b7386b0db0b0db4997c4c1c2266a71ed46903171ae5e
+/home/gilli/thesis/prelude/functional.fut:
+  hash: 4dd07b4ac1d82a71d05c685284b29da46145426ee8023eef47c2534cf65a5b1d
+/home/gilli/thesis/rts/c/scalar.h:
+  hash: ac8cd9c6a3eddb1e3e28977a0a1e8c3cc6dfcae7157034d3c83c241761b64850
+/home/gilli/thesis/src/Futhark/Internalise/Defunctionalise.hs:
+  hash: 7258d6583a234576f0378463d4edbe8cff33ff8d18e4f0b1f2613764abdbb599
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/SegScan/SinglePass.hs:
+  hash: b5be59dadbe0e0a8fa3c9931880ff30a94ff971e1f3062159e72f108d673f916
+/home/gilli/thesis/src/Futhark/IR/Prop/Reshape.hs:
+  hash: d89d0734ade06285d50b49fa98be7b5857adc3234b3ed2aac6ec782670b5f381
+/home/gilli/thesis/src/Futhark/Test.hs:
+  hash: 37871120424c529252bd08e533d08ff9121b1bbe7bb46f03a58fddb767bf7ab1
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/Distribution.hs:
+  hash: 22c384d332008cafdda440d7b4ba991751d547963fa788c26aef009b24dd92c3
+/home/gilli/thesis/docs/hacking.rst:
+  hash: 411637a412a7c120b6d602c5cc1885a9111517b941161489151c029473d57e24
+/home/gilli/thesis/src/Futhark/Analysis/PrimExp/Generalize.hs:
+  hash: 7cdb0b24a59dda604d47ec6d596eba6a1fa1ddb33b8bfff44c92356efb834fd4
+/home/gilli/thesis/docs/server-protocol.rst:
+  hash: 83ab86a95868fabae27e422eb11380a8fcf547dadca411e4e7b0ddb2a0220710
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rules/Index.hs:
+  hash: 1da9eb3548a91772c4bd74c9376b9c6d66f679a037902a62e0104e34ab9726d8
+/home/gilli/thesis/.git/refs/heads/main:
+  hash: 511c8c2edbb8a643adbbe26b76429670ff5c497c40e4cef472411ca656f9f433
+/home/gilli/thesis/src/Futhark/IR/Prop.hs:
+  hash: 7b865cc941eb50c729c1549118ef9110a09b4821461abc3c7a84cf2d4ced5ccb
+/home/gilli/thesis/src/Futhark/CLI/Doc.hs:
+  hash: 0969af4629a6049c80efc374c1482d5ee28e458eb4f4af478ff5c6dced86f72f
+/home/gilli/thesis/src/Futhark/Test/Values.hs:
+  hash: 02224475249d27e8b366025218b1593e0268858fbc2ae6e03ce61ba537e70192
+/home/gilli/thesis/src/Futhark/IR/Mem.hs:
+  hash: b0338e60113ad14711bbc4c59ae4c8921477c12fdca6c83d38718ad1cabe3bc6
+/home/gilli/thesis/docs/c-api.rst:
+  hash: 07e93dd64af03b68b39d75e407fee5e231981d42f5298f6ee21208fc9d385423
+/home/gilli/thesis/src/Futhark/IR/Syntax/Core.hs:
+  hash: a191f4439d676e81a6454220b21ce58f3c0e579f86655531cf144e410a4b6faf
+/home/gilli/thesis/src/Futhark/Pass.hs:
+  hash: cce02ba45f7ac18030e271c87718d2d1989c9751021a8d20d78311fb6a759460
+/home/gilli/thesis/rts/c/free_list.h:
+  hash: 33a4772fe366617b0e88618fa4a51294632ffa08240c749cf28cc1fb3442955a
+/home/gilli/thesis/src/Futhark/CodeGen/ImpCode/Sequential.hs:
+  hash: dc4af55ff64aa252d9a05f73f77a4983e46dbfc927e68347d2521831ead66b5e
+/home/gilli/thesis/rts/javascript/values.js:
+  hash: 00698d011454f87d8d7442bf1d2cf85d02eb51acd44b09b0b686301ed24db7c0
+/home/gilli/thesis/.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.4.1.0/build/autogen/Paths_futhark.hs:
+  hash: 901360bf325f957f8ed2889b90c65c277b61d19e604cf7020f91a95483ffa303
+/home/gilli/thesis/rts/python/tuning.py:
+  hash: 9f6a00991403a44bb3868eefbbf39f95ca753d3cb70b737e12875e587998180a
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Multicore/SegMap.hs:
+  hash: 0ba30edabb7b9c9b4b1b426ba64d5ec2688293e42d054f898c1c38f0d8c46a1c
+/home/gilli/thesis/src/Futhark/IR/SOACS.hs:
+  hash: 34095e66c4cd66e653fc97efc389ff42203f25bb0be5b4473790ced152e14aa2
+/home/gilli/thesis/src/Futhark/Pass/ExtractMulticore.hs:
+  hash: cba09015fb3df628dc7de3b766e429b8697519d1eeb3f5460277a972d105fa39
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/SegMap.hs:
+  hash: c676d83ed49bfd9c20f52d10814e3fc8c04e9f47ea38cb09100a82568150b914
+/home/gilli/thesis/src/Futhark/Builder.hs:
+  hash: 29f05bc055b5f9601b96a5f4d9b819eabc5f1d8f4dd4efc0f8a42d5698f5c0a0
+/home/gilli/thesis/src/Futhark/Analysis/PrimExp/Parse.hs:
+  hash: 821814dfaaab77190b661f2664b4f9434e9fba6b3eaa2e90f99887a2c1d375d5
+/home/gilli/thesis/src/Futhark/Analysis/HORep/SOAC.hs:
+  hash: 5e2c216add8ae8ecb7d4f6df847a00236beb353df2b1470957f4d664aabb525e
+/home/gilli/thesis/src/Futhark/Util.hs:
+  hash: 719132f48202b88d59c584443879f80713ea65e12f2f59218d03d17fa46f8bc4
+/home/gilli/thesis/futhark.cabal:
+  hash: 224491e8c88ccff8c8cb596faf8daa1a32428b91204300f52e523fc4fcb11367
+/home/gilli/thesis/src/Language/Futhark/Warnings.hs:
+  hash: 76ab059431f5a714faad907b99b94ff60d4d896f147dc8edda65813258ef95d5
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericPython/Options.hs:
+  hash: 55b11741fbc317dcb6465f2fb4fc355f48c7b257e5c78d88d0e1758dddc7fb65
+/usr/include/stdc-predef.h:
+  hash: 64fdf694f7b3d51ec6c45c06dcb71ebbe9455742d3ea673012016668853d3bff
+/home/gilli/thesis/src/Futhark/Util/Console.hs:
+  hash: 857f8a134e010111449d5616df0a1c27dd60240b54049c8e6614ad650d4b2f2f
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericC.hs:
+  hash: e79a1d60b518ca7ca4bc7bfacf2ec563b76cc6d5934c88bcc275e9e6b073a499
+/home/gilli/thesis/src/Futhark/Analysis/DataDependencies.hs:
+  hash: 2973a4dec6cc99ec453a452502b5dab1a67c4c677102124f7eab8857698025a5
+/home/gilli/thesis/src/Language/Futhark/Parser/Monad.hs:
+  hash: de8b1f4668a09af9dd98f1fb206faedf68b35041af479dc5fdcf40468f9e49e6
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/MulticoreWASM.hs:
+  hash: aabb4d37c520a1bbfb1082b28cb189baf818408757f9ddc289412f3fcfc63876
+/home/gilli/thesis/.git/packed-refs:
+  hash: 19609ba9907b35a4d50a44457727b53161f634b033fa5a04b89da3d992d6d8ed
+/home/gilli/thesis/src/Futhark/CLI/Autotune.hs:
+  hash: db5c141042afa9956719ccb18be98b041d071567778f9cb7afcf4628243f69a3
+/home/gilli/thesis/src/Futhark/IR/Aliases.hs:
+  hash: 4fb549e9045d748a740bad478cd8fdd4392001e0d8b48ac8158a18c96866d7f7
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/ToOpenCL.hs:
+  hash: 87bed7d7095c9078711d66c057c8410d651b91a6ae990f0b10e746d48e834150
+/home/gilli/thesis/rts/python/memory.py:
+  hash: 286a8c97846077acea25509d5af04a3836362ba093599b925300bb93d8360d15
+/home/gilli/thesis/src/Futhark/CodeGen/OpenCL/Heuristics.hs:
+  hash: 276bcbd67e3a904842849c71fc96460b9685bb7321928d7f9fed4818e3f11fea
+/home/gilli/thesis/docs/c-porting-guide.rst:
+  hash: e6fb278528b2b6caf070d531acc6a5d27b6100f2092c1e4d902d9e525ea9ea83
+/home/gilli/thesis/src/Futhark/Internalise/AccurateSizes.hs:
+  hash: ab11e2ca4af3964dcf76e543493cd0eb2859cee41f429c9c1e78b35abbe9e187
+/home/gilli/thesis/src/Language/Futhark/Semantic.hs:
+  hash: 47a8dd4132d8a546b7c96a7b06c72b6dc9f424339e3bb97c8fa7c7772c0e474b
+/home/gilli/thesis/rts/c/scheduler.h:
+  hash: 0d7ba333eae743c8e82b5d077204c295b8963d52304b181424ae984bce77e771
+/home/gilli/thesis/src/Futhark/CodeGen/RTS/JavaScript.hs:
+  hash: ac2cb606df3458ba3b8e4e06166dadf640069429e322fcfbadec891a3badc1e7
+/home/gilli/thesis/src/Language/Futhark/Query.hs:
+  hash: c43abbcd4750bab52d0d8d92db0cfc4342233cc79624ceac0e31ffb3ab34162d
+/home/gilli/thesis/src/Futhark/Pass/KernelBabysitting.hs:
+  hash: 0bcd03b721295868f8afb40504dba65cfee10f89bf235ffd6bed47f9b9f98d61
+/home/gilli/thesis/src/Futhark/MonadFreshNames.hs:
+  hash: b779e2b9af96a61d80fbd4be14b6a144ef1482f67165db8304d6b96d572ce374
+/home/gilli/thesis/src/Futhark/Optimise/Fusion/LoopKernel.hs:
+  hash: db317fde1fcef79288926338e9297dd82d9d72e912a1a5ae394a8aa5620efe9e
+/home/gilli/thesis/src/Futhark/IR/GPU/Sizes.hs:
+  hash: 3f47227b67295ab84f49780724b778fe5a6ff7dea7d23a61a6f1742222390039
+/home/gilli/thesis/docs/performance.rst:
+  hash: e71949294b0daabcdb2f7faf2e2a89b88787d386c5575555b2f92126fcf019bc
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/MulticoreC.hs:
+  hash: 87f38d97b1ab60ca07ba74bf68451a63014df35f84cf4b8e2f03361c316f6ecd
+/home/gilli/thesis/src/Futhark/Analysis/Rephrase.hs:
+  hash: cb8c4b52ece9e84bacb8e83b968abb4a0d7074dc933780cfd7e8c05e341e4a32
+/home/gilli/thesis/src/Futhark/Passes.hs:
+  hash: dcf961857507119f08fd1ac8548308806b75bba06af18c9dc2c88ce2812700ba
+/home/gilli/thesis/docs/man/futhark-wasm-multicore.rst:
+  hash: 68f91aaadbde344f28338eac9db8645fbf450ca1043978aba113cfe6a383a820
+/home/gilli/thesis/src/Futhark/Script.hs:
+  hash: 6e5d79f0cf5553ed223d918d54ed7e8a99c4e9eb371b08c1a8e8c7dff8381b09
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/SequentialWASM.hs:
+  hash: 5eb0659c803a966e6253a26238937742beb0cdf0b0bd7d99fbcb013b0d9a28d3
+/home/gilli/thesis/src/Futhark/Optimise/Fusion.hs:
+  hash: 3d521728374fee895c11ce7675d761475036271bff7ac347bb6110d3046bbfd9
+/home/gilli/thesis/src/Futhark/CLI/Test.hs:
+  hash: 5f02c08a13e2d5639d62972a1d3691790d0c42020483a7d227733f312159c20e
+/home/gilli/thesis/src/Futhark/IR/RetType.hs:
+  hash: ea9c16d0fe255a2b0416ca83ba463c6822f49d53823775195d6b2dcee247002b
+/home/gilli/thesis/src/Futhark/CLI/Check.hs:
+  hash: c3b94f28ce4aaeeda008234eabc713c28f4911831ca7a49065f5801ef00ea1e9
+/home/gilli/thesis/src/Futhark/CodeGen/RTS/C.hs:
+  hash: a5d7a37e49432eb9528dd96621c6c2aaedd28dbd0f4e8c60485b50ad3daa9af0
+/home/gilli/thesis/.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.4.1.0/build/autogen/cabal_macros.h:
+  hash: 99dd73e81c65a8bf2e1be0d0f45d2d0a7c4dfcd9a6f4e1dbeb58b2475b73903a
+/home/gilli/thesis/src/Futhark/Pass/ExplicitAllocations/MC.hs:
+  hash: 3747f28b3cec975154a2a062c82d2acee4199aa7aa879984429d27fbf88c31c0
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Multicore/SegScan.hs:
+  hash: 4fee6531d28efce2c817bf2d1d0e4cb243ea3381bb7343026f38c60442ae1fc0
+/home/gilli/thesis/src/Futhark/Optimise/CSE.hs:
+  hash: 8a8d42a8bfb8606d2ee33518b12fd2c697f7e104b46beae27b60175456f03df1
+/home/gilli/thesis/src/Futhark/Analysis/HORep/MapNest.hs:
+  hash: 45a1849848bcffe2ded75206cf5936a24b44c2b3b01547255ed1be06456cf98f
+/home/gilli/thesis/src/Futhark/Optimise/InliningDeadFun.hs:
+  hash: 15269b8b00c9facd19d8098038debe3ddd833694756d6f40c24f16cf86ae6873
+/home/gilli/thesis/src/Futhark/Optimise/Simplify.hs:
+  hash: 6af1d7ff76ae95af0f5974f52acc1b72163ed1d7175e181fd3b1a776ebd1d369
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rules/BasicOp.hs:
+  hash: 60093de81f8d48d6774d08ad930d562028323bf02fe4aec07e89a3374a1321b6
+/home/gilli/thesis/src/Language/Futhark.hs:
+  hash: 7be02cecfbc1171e3d0894ea658566144f0cf9942c1718f0fd08e6a45202dcdd
+/home/gilli/thesis/src/Futhark/Optimise/InPlaceLowering/LowerIntoStm.hs:
+  hash: bfc282cef714713ed7de37d639fbbbd3c76a9648c50fa05a5b18a01a158ece39
+/home/gilli/thesis/src/Futhark/CLI/REPL.hs:
+  hash: 59f83af13487aeff86342d18e80589db0066dfbdd3e9fa88305d7a01f47ff2ea
+/home/gilli/thesis/src/Futhark/Compiler/CLI.hs:
+  hash: 7368e39fe72b38e7aa32e501feed91021cdc64128aa7a4e8e41441e06995d67f
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Monad.hs:
+  hash: 6bdd8e79afdad823153f11229227034d620ef6eb02a67e9f556cbbc035e1e992
+/home/gilli/thesis/src/Futhark/IR/TypeCheck.hs:
+  hash: f8a212320072498114fc4e4feb4892384d67aaed484cdf539065b8c092a17381
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/SegScan.hs:
+  hash: b617ec16c8c678776e698ee3a2f9ed8c628cd4ab8ec7e2c870a4519b6b5f1259
+/home/gilli/thesis/rts/javascript/wrapperclasses.js:
+  hash: e52bb485a115eaba16688d4a3d1120a2f0db4bfb51228eb75711dbfce6041372
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericPython/AST.hs:
+  hash: 6e9f7d5773bb4cbad9a6e800e487f1def2fa59f2a8855b2008abfbe3b97ab292
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/OpenCL.hs:
+  hash: bcdb31b3b403b8f3365ed64e25ff0d08730c6a286b20cfe75a8e6551ea08851b
+/home/gilli/thesis/src/Futhark/Pipeline.hs:
+  hash: 5d36d16c9a90c1ec326b812d33107c77e41201273b5da6fa5e775e9daab87928
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/COpenCL/Boilerplate.hs:
+  hash: ce877a22086291e3f8508f29ee202aab3d89953c67bf85f939d6849a43251911
+/home/gilli/thesis/docs/man/futhark-dataset.rst:
+  hash: 189d84ddf4be6826ca2d1c7261f93d5039be43ef32a1d3dcc2101c319d835f8f
+/home/gilli/thesis/src/Futhark/Analysis/Metrics.hs:
+  hash: 86a63b86ced8e29fc4f16fad56d0d29f36545453d507b9f38a527ab3377d9fef
+/home/gilli/thesis/src/Futhark/CLI/CUDA.hs:
+  hash: 5216dc0059ad4e4f00f3e76e6f2b67c72db7afefa6a688fc187ed6a81ec07318
+/home/gilli/thesis/src/Futhark/Pass/ExplicitAllocations/SegOp.hs:
+  hash: 450659733ca65ee5f86d813c5c7bbbadd675d342ec7d63eec53dd16969815e40
+/home/gilli/thesis/src/Futhark/Analysis/Interference.hs:
+  hash: f9e1f364331836de09ccd4ffe0d0287beb2897af29a00c0395b39c8d1d392caf
+/home/gilli/thesis/src/Futhark/CLI/Defs.hs:
+  hash: a519bba13095e17821f1fd8cd99ec72e5ff81b19a356c42026783c4cb69783af
+/home/gilli/thesis/src/Futhark/Pkg/Info.hs:
+  hash: bfc58d8d3b16d2aa3318aa1e0fb39b22677123dfc62ff174d172ed119e25d891
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels/ToGPU.hs:
+  hash: ca685cbc38032861985d7a845128356b0a72f91e0517605f914d9c84de0ecbb7
+/home/gilli/thesis/src/Futhark/IR/Prop/Rearrange.hs:
+  hash: ce30dc77ffd525d4136a3b6d042b599c939df90abfdeb8192eb70d6113766f82
+/home/gilli/thesis/src/Futhark/Internalise/FreeVars.hs:
+  hash: a48811e351cbb3c1b5e300f58dd2d6f42a2937b7303b2b0a826af85b61ef2c6f
+/home/gilli/thesis/.git/index:
+  hash: ea1d219f0b55a160a12919ec44ffb4c03dac6f906e8dbad88fbe5ad2342a1ddd
+/home/gilli/thesis/src/Language/Futhark/Interpreter.hs:
+  hash: d2ed4b889460eca9f578bf233ba69d195127c2f079c1fab6bf183ffa29f07e2a
+/home/gilli/thesis/src/Futhark/CLI/Misc.hs:
+  hash: ddd269270fcab343cc2f3cfcf384722231fa9e30ed5e494c79b78cd68890db13
+/home/gilli/thesis/src/Futhark/IR/Primitive.hs:
+  hash: 053352e311c4352a90185823809e4977bad29faebb90458bd8928ae8fdfd4088
+/home/gilli/thesis/rts/futhark-doc/style.css:
+  hash: 1426aa266a4ac495ec9f9a4d89913f9262ac28f6850bd515d34a96659424119e
+/home/gilli/thesis/src/Futhark/Optimise/Fusion/Composing.hs:
+  hash: 28abe22a58fc1a12e48d255d61c5ba8942369d0f5c28526a813ea01a64a137d4
+/home/gilli/thesis/src/Futhark/Analysis/SymbolTable.hs:
+  hash: ea7db6fdfb99a76073e311dd345cba5f61b6dd802453ea92742bb3fe93caefa3
+/home/gilli/thesis/src/Futhark/Analysis/Metrics/Type.hs:
+  hash: 3e5af199f47bc9f903d49c205217fd258d290a20a15692f8a72c5fd3953d8787
+/home/gilli/thesis/src/Futhark/CLI/Pkg.hs:
+  hash: d4f7fe36a19455979d4abbe7df7cc509ad027e15f251af1d8ca1ef0ddbf5c7ac
+/home/gilli/thesis/src/Language/Futhark/Parser/Parser.y:
+  hash: b3847b7c80e14b98dbc16e4388735e5417e2fbb80d7c6bca720039c6e5494d69
+/home/gilli/thesis/docs/Makefile:
+  hash: a0915dda48a9d61d4c1390d08df294296235c5d9b90d214c9f4213d10e18fdd4
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Sequential.hs:
+  hash: b709b67a5b56df63f06c87e89ff731599728abc6d51edda28bb8c3e58c1210eb
+/home/gilli/thesis/src/Futhark/IR/SOACS/SOAC.hs:
+  hash: 65c1ea4477cbc05b7ae305808e208bbeb5b2f4dbe66d6d62ad22b3ec670fae68
+/home/gilli/thesis/docs/man/futhark-doc.rst:
+  hash: 356d601210904ee5a9874fff9e3f16817f4e2d6750309e6cfb7defc78b4d635e
+/home/gilli/thesis/src/Futhark/Error.hs:
+  hash: 9bce432635ae269829a54ad55368fc12f425cbbd70761fabddc495d4d202d949
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Match.hs:
+  hash: 7bfdf868d3749ab4430dba116c282cb31d25fa951adde53660dbff0c9fa9fd5e
+/home/gilli/thesis/src/Futhark/CLI/Run.hs:
+  hash: 5345c89f2f099feea3f1d92a12dbadd31e866b27ab8264059145a48c285e4aa9
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/SegScan/TwoPass.hs:
+  hash: 13339430bb4ce0d6ba466c2ae0b7b8295e3de49c9eaed9020f0fafc965ce7edb
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rules.hs:
+  hash: 5e2a587696332d4d356b00939959a73ff74873af54a951c0e5578283dde9d9fc
+/home/gilli/thesis/docs/man/futhark-wasm.rst:
+  hash: 2d94721960ae44b86ba037968af4f4f90cc069c1dd11ccb8b3cce4d08f06d2c6
+/home/gilli/thesis/src/Futhark/Util/IntegralExp.hs:
+  hash: e39ab6aafb5e26a780be4da132b2b94ce895aadd7033b005b2c6e9b95aada19a
+/home/gilli/thesis/rts/c/values.h:
+  hash: beb1216abddbbc1abf9e38984a3ef781a7163f76a8b5ca229b3669b9eb185777
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Terms/Monad.hs:
+  hash: 0e312d968edb18cfc7cb1364133534a57b95c67ce4a54449aba2fe2967e8557a
+/home/gilli/thesis/src/Futhark/Optimise/Sink.hs:
+  hash: de390218afea594588cce338ecdd0f38bf1a2a24ed6838cfdbfd056f899423e7
+/home/gilli/thesis/src/Futhark/Builder/Class.hs:
+  hash: 6ca0c5eeb0e322df16ff168235a6d5d061323b5db944833e562404c6ab8ade5c
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rules/Loop.hs:
+  hash: 634fd3ed90dcdab1e1ef0334d6468027cb0e2ae9a670c076b46a2246f551dcf5
+/home/gilli/thesis/src/Futhark/Pass/Simplify.hs:
+  hash: a5b55c9032b6192b12c9af7f94f29dcd233270c46a7533aa66fd924c65cb9727
+/home/gilli/thesis/src/Futhark/Pass/ExplicitAllocations.hs:
+  hash: f6fa17e65c2f4b72e3a0d32b7966e28ccef9b036166486c573056ce846b4b307
+/home/gilli/thesis/src/Futhark/CLI/Query.hs:
+  hash: c53f481064428fbb3b6c79b3411b736d0b7a852cc3995a9a88e1db4c0ea4d4ff
+/home/gilli/thesis/docs/man/futhark-opencl.rst:
+  hash: f389698037ee03cc69fe22982d3dd1de1737d8084e7925d035c18c9e5e84a6c8
+/home/gilli/thesis/docs/binary-data-format.rst:
+  hash: c5e9af10ffaf0fc72cb7f612a65fd58e59e49dc8fa5db9610180f43805bd9665
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericPython.hs:
+  hash: 0f36b028d049fea7199fc2b9f81d1793f5a3fd06eb3b63e83156c2e9a127dbc4
+/home/gilli/thesis/src/Futhark/Analysis/Alias.hs:
+  hash: cbfbe438f239118a68e67295e8e9f354da301bf8e298d096d5bbd74942332e8b
+/home/gilli/thesis/src/Futhark/IR/Rep.hs:
+  hash: 094292656202f59d3e004015f08cf1865efb049892bf8c3116e6fc5e45309e98
+/home/gilli/thesis/docs/installation.rst:
+  hash: d82c5547fe5eecaa077515d4e5512414c6cf0ddb8a776819207e8db37a26c496
+/home/gilli/thesis/src/Futhark/Pass/ExtractKernels.hs:
+  hash: 34d48f442da89ea325667e1a3c931a3e2cd6d556701ce58e09f73089d3d45c32
+/home/gilli/thesis/src/Futhark/IR/SOACS/Simplify.hs:
+  hash: 440656f532882cbcd65ee91f14f348760b0ba6f057834adb2fd46d537f82e796
+/home/gilli/thesis/rts/c/cuda.h:
+  hash: 47ddc68756cfa1b20f906c225e8032cb4803b4819612e38d8c4b32508c6f34a9
+/home/gilli/thesis/src/Futhark/Internalise/Monomorphise.hs:
+  hash: 0cef5a92248ff857daec8bd557ec459c6d4bfa7660e54daad3e78f64219f2bc7
+/home/gilli/thesis/src/Futhark/Util/Loc.hs:
+  hash: 37230811d0994f6690cffa129c829ebdbf5cf4a706e7943815d9c55ce7bef532
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericC/Options.hs:
+  hash: ae240084c8ae08c8d2528da99281e3d4d552d37908f909c10702ef557a3d06b1
+/home/gilli/thesis/src/Futhark/Pass/ExpandAllocations.hs:
+  hash: b752aae102d7549bddf7c5d8d7d006511fc559cb7f517d531eb71dcaa12f34d3
+/home/gilli/thesis/rts/python/panic.py:
+  hash: 02ae83d68f276881eb0df8e9482075c21d29046043e6feba7dc7727a65e269bb
+/home/gilli/thesis/src/Futhark/Util/Options.hs:
+  hash: b6cdfde86629dd5c0fdbce742c2be9edfb1d4329c2f460f139cea8116a7e26cd
+/home/gilli/thesis/src/Futhark/IR/Prop/Constants.hs:
+  hash: d7194cb9c79d4b0060ba8678c90a40c0c5ae3e3371fc71492d3ba4a14085ff9e
+/home/gilli/thesis/docs/language-reference.rst:
+  hash: e292b146c13430f178f986d00517e6f81338861e5ba4c8b6ac128435d57202e6
+/home/gilli/thesis/src/Futhark/CLI/Multicore.hs:
+  hash: e5239ea0cd026b2d9220a78b9343b09981e5919776d3ae61bef9f809524c600f
+/home/gilli/thesis/src/Futhark/Transform/Rename.hs:
+  hash: 23be40f473958611dcaead159455c6279e75f3d169c0fb5536cc0310979b5dce
+/home/gilli/thesis/src/Futhark/IR/Seq.hs:
+  hash: c09bcaef5f3c91783b75b4ab90d4d1d423caf455233bcd2c75a9a1de7ef7ea5e
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rule.hs:
+  hash: e81fd7d19e7993c33daf9b81568f981df8afbaccdd293e320fccc6b2a2d0ee71
+/home/gilli/thesis/src/Futhark/Tools.hs:
+  hash: 518886697bbefa373fa1dce61918f07d260ca002b9bb94bb19422d896c8a9233
+/home/gilli/thesis/src/Futhark/IR/Mem/Simplify.hs:
+  hash: f6d4c8a1bb663d7e5d1d5fc35b0039a322270d4159d643adef2cac50be72911e
+/home/gilli/thesis/src/Futhark/CLI/Bench.hs:
+  hash: 9c6c40b3d53a31262ad6964299d3714e0fc6c55fab6f474c0ca713e2eed902b4
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Engine.hs:
+  hash: 6e5c218bfb5dcca486c1a3452352267c6c0aa32d1ba880e37bf07c3fabf270e9
+/home/gilli/thesis/src/Futhark/Optimise/BlkRegTiling.hs:
+  hash: 6ef1d360cada6a22eba18339c9380e12321afcc351493b616e91dbfc8b91fbe1
+/home/gilli/thesis/src/Futhark/FreshNames.hs:
+  hash: 56c425171879a5326b5dbf1b4d7e8d3ae984d11a1b5380c6dbe66c1105070f76
+/home/gilli/thesis/src/Futhark/CLI/Dev.hs:
+  hash: 53131dac4eb2fae713feaf861280ba8fa5d1c309b9ef5e71099c93ce0100844f
+/home/gilli/thesis/docs/requirements.txt:
+  hash: 224eb23a8d779e880f00bdf2b8c45eb14be1ea31d0468c8d6e1df8c3d54685bc
+/home/gilli/thesis/src/Futhark/IR/GPU/Op.hs:
+  hash: e892088b73c78e4b6fc533bf6c67b286991ece34370ff9c018a5f35b1f46f25d
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/SegRed.hs:
+  hash: 7268d408ab8b4bfc9559213e6f287b49eb4abf383234879cd6c3b58e8352aca1
+/home/gilli/thesis/src/Futhark/Compiler/Config.hs:
+  hash: 5b8bd94e1c45a5efb19dc03bf981c5ee03d080bde57df24b14e6048567f98272
+/home/gilli/thesis/src/Futhark/IR/GPU.hs:
+  hash: 063e5a0a67ffd436ee4f495ebb5524b5d907b2c9c2b3b1d363876b5cc0413188
+/home/gilli/thesis/docs/man/futhark-literate.rst:
+  hash: a322a5bbabc3563bca0cf53a5eb731472e514a2aca2a5cb7b40bd11a7878f502
+/home/gilli/thesis/rts/c/atomics.h:
+  hash: 3ddfed468e630b05ffe5445267f886d9bda09da6a78520e83ed50bf76eb174f7
+/home/gilli/thesis/src/Futhark/IR/SeqMem.hs:
+  hash: 9b7581c38728359fa09d261a66e7ef156fba5f53b96677c67702befb15625e49
+/home/gilli/thesis/src/Language/Futhark/Core.hs:
+  hash: 6263c2e7bafd38b9c598807f51f2838913b3f7309bf6c968b171d148a4c416df
+/home/gilli/thesis/src/Language/Futhark/Traversals.hs:
+  hash: ec7460076f1a600e15dfe45d6aa1a875d61293a9a0746a8ad38652fb85a02776
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/GenericC/Server.hs:
+  hash: b595654557e4ba78817c4adb64b24490e40d9be2c82312662f70ef143656fc16
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Multicore/SegRed.hs:
+  hash: ff4a205e1d9cd8fd56768f2561a90c30eb6ac01d1356d2b60ee726e3b8515d42
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen.hs:
+  hash: 54866325d2ed6c5c21e3e7c85d92fb20fbefdc7439a2ba49c322930e739fbaaa
+/home/gilli/thesis/src/Futhark/CodeGen/Backends/CCUDA.hs:
+  hash: 0931ada39229b3cd0ae4348f337eda086b7b66b045c1b144c3e8fdee96f92911
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Terms.hs:
+  hash: 9d695ef7ddf977cd79d84e1d098ec30de7e27270022504e7b465e0b580838fb0
+/home/gilli/thesis/rts/python/values.py:
+  hash: 855a4b19de7b907c3cb78d294c7183799d2828e49671d2acbdd2575b304ae0b0
+/home/gilli/thesis/src/Futhark/Analysis/PrimExp.hs:
+  hash: f8f4aab5c9f888fd6773ac74f06dea820e054e1f3c366d921f3f558fe6f52d5b
+/home/gilli/thesis/src/Futhark/Internalise/Defunctorise.hs:
+  hash: 0bf3ef61d5e0702d3e7f27b8a1adfbf5874370a2c4067b4a6f12545c24c8863b
+/home/gilli/thesis/src/Language/Futhark/TypeChecker/Unify.hs:
+  hash: 4ae34f74e8e0d36a00642875daf24605d5c411b0895d238ea1de18d78dc9c712
+/home/gilli/thesis/src/Futhark/Optimise/Simplify/Rules/Simple.hs:
+  hash: a49f2c3d2864ab089803c9054b8478857f244b83272f8103dde186704771f800
+/home/gilli/thesis/docs/index.rst:
+  hash: e6a8e08c0837a703226542a508fdd03d2f4eb2f99f2b148c4d4e633ce03c5015
+/home/gilli/thesis/docs/man/futhark-run.rst:
+  hash: 08ef7e5c174e30db731148e868703d1c633fdcef7e2ace11f0de5fe7d1c4a07b
+/home/gilli/thesis/src/Futhark/Internalise/Exps.hs:
+  hash: 3baf87da8ff6eba997d8b04c58a43e0a02894af7323510add4f1d6ebe032af96
+/home/gilli/thesis/src/Futhark/IR/Parse.hs:
+  hash: 199c8c145bcd2eaaea890f5e3d27ccd1b885afd3a2dd7657cb722426a9560498
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/Multicore/Base.hs:
+  hash: 099d28b13d40db6553f46095723edff48f2249c55feeeeea89212281f11458fa
+/home/gilli/thesis/src/Futhark/Transform/Substitute.hs:
+  hash: bd5b42369fc64a641fcb06065f436f7c0be3f9e9e52096e07778b1ee400ec97a
+/home/gilli/thesis/src/Futhark/CLI/WASM.hs:
+  hash: 4d037bb37ddb1b6528971838de8dc5c3147da2984b8f21c51aebfa90380cf1c4
+/home/gilli/thesis/prelude/math.fut:
+  hash: 33eeb03771e1421a129ebf344655deb964552c6d16df96bb96580262339bc873
+/home/gilli/thesis/src/Futhark/CodeGen/ImpGen/GPU/Base.hs:
+  hash: 73f8da5bc14994286eb3a1a89409188443573b6e88985203643ca7b3831b368d

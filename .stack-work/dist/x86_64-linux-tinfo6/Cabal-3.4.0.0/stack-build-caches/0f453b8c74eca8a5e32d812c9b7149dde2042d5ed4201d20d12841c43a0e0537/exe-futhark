@@ -1,0 +1,142 @@
+/home/gilli/thesis/docs/error-index.rst:
+  hash: 8ae2b4eb04184455245dbd9f64aedb321fa9b3ede8ab71fbc257c0d751b25758
+/home/gilli/thesis/rts/javascript/server.js:
+  hash: ef7765c75ae9f4de8ef81bce2b7a5977bf28574e492a4a62a372a10b62c4d325
+/home/gilli/thesis/docs/man/futhark-pkg.rst:
+  hash: fb4a0de399005a152b2d3ea2a16739076327ee398485a78b0f9fe4fde75f1fe5
+/home/gilli/thesis/docs/man/futhark-python.rst:
+  hash: ea5c173ac49cb4cca3559565ebd5a2d8f41ccb0d8281ca726779af788009bf57
+/home/gilli/thesis/prelude/soacs.fut:
+  hash: b9c4a724c0209bab65edf28cd3c07f19eb3dc4b7a7e62943a24aa49a1a7783b1
+/home/gilli/thesis/rts/c/util.h:
+  hash: 4187983e84efb22b44bec1e3d5b81bd6760a920f9e8838a5b87a7a41176cc3b2
+/home/gilli/thesis/prelude/ad.fut:
+  hash: 3b0b6a3c51a25551f5f01ff8c2f3945341e1110d4ab82c3c59491bcc3a68f486
+/home/gilli/thesis/rts/c/tuning.h:
+  hash: 26e7941aaddda683b4fe3f06e929d16dcaf1b007e5d7fa9dca227d1ec70d50d9
+/home/gilli/thesis/src/futhark.hs:
+  hash: d802eaff97bf97e9ed90b279731d21d480150582747ad8f7fa5836fa3ce77973
+/home/gilli/thesis/docs/conf.py:
+  hash: a70db5a859f151031b647934280be06d51ee774c40a2d14151c817f519afe73f
+/home/gilli/thesis/docs/man/futhark-multicore.rst:
+  hash: b730a21cb9107106a5b0a9e789d1478f6e28f6d0648a4b8914ba0a2d5ff35dda
+/home/gilli/thesis/docs/usage.rst:
+  hash: d87f15cb494c7a8d05ce89d318810d5c0322571910b52602734135aa206ba1cb
+/home/gilli/thesis/prelude/zip.fut:
+  hash: 63c5a70d76b6c32b4de4a73a7d3f5bc3ff0de49221757f09bd0fe94c38d7ddd4
+/home/gilli/thesis/docs/man/futhark-pyopencl.rst:
+  hash: 06981a7f15cc384e55f2c8bff72b9d8f70a1a38827147a60732c16db23cdde07
+/home/gilli/thesis/docs/man/futhark-bench.rst:
+  hash: 4c007df7e21000f2004096bd4cade7be78427c0cb61afcb75337b1961d4fd16b
+/home/gilli/thesis/rts/python/opencl.py:
+  hash: 3708e4a1ea0caa33019252d63d4139649ea0270967fa094658e54b0c41c2010f
+/home/gilli/thesis/rts/c/server.h:
+  hash: 1d6af4eb0f040d7fb5584a1ede9617c54a7aaace57514c833587761a236bad84
+/home/gilli/thesis/docs/man/futhark.rst:
+  hash: c481037d3b60a3b5d42cb4e089e6381229e485c638eb79f35aebd0e310deaed1
+/home/gilli/thesis/docs/man/futhark-autotune.rst:
+  hash: 5e16e21e19ef4d0f0279a9d80aa21b5cc34027ebaca5c670e716091ab8373e70
+/home/gilli/thesis/rts/c/scalar_f16.h:
+  hash: 4aab390e6a7f5b5c2d209b623f9b15e97c42aaef8b211c82bc305501736df409
+/home/gilli/thesis/rts/python/scalar.py:
+  hash: bd61b92aa3312879b23299bdbea2301e2a06d9337d1291ac7ccb834692da8948
+/home/gilli/thesis/prelude/array.fut:
+  hash: 765e3ee211e63950b75a911887350897d46d3053263d571a37ee5db1ed1f63f6
+/home/gilli/thesis/.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.4.0.0/build/futhark/autogen/Paths_futhark.hs:
+  hash: 59b6a792bcc856b70a6c4b04531db18e0207e6866a0fbecf275fbc9cdf28dad5
+/home/gilli/thesis/rts/c/timing.h:
+  hash: ca555a8c8487cd5127e94e3a5120a3fa52cff1122dfe5f2ad030308b4afa4ea7
+/home/gilli/thesis/rts/c/half.h:
+  hash: 392fb758acd38de4131612d75fa17ddffeab1a9d3b5c96f12dafde6a244e2359
+/home/gilli/thesis/docs/man/futhark-repl.rst:
+  hash: 5bba0d9298e49f5ed21e3e3e53f12c357866b15e84dee7903bc1290cf38ea79c
+/home/gilli/thesis/docs/package-management.rst:
+  hash: fa4b64ef62f754937fe10cb1cf702b6b218d913cbf0e156d6bb13e110b547896
+/home/gilli/thesis/docs/js-api.rst:
+  hash: d7dccd31349cd174272c31b3716b8dfaa64d9f801c89ca5f5c40cd9718769375
+/home/gilli/thesis/rts/c/chaselev.h:
+  hash: 9fa34c4b509ea6db4d1000a881aa065fd13fc2361919662ab83a119620a38124
+/home/gilli/thesis/docs/man/futhark-cuda.rst:
+  hash: 7970505a83c512d48d53742778962d5e42f91e61dc655eab0ae1fa1aa9ba6f3a
+/home/gilli/thesis/rts/c/lock.h:
+  hash: c9021f90779d09ea65c707234f0809e62080ba7bc6b998744362b6d7ac7786a4
+/home/gilli/thesis/rts/python/server.py:
+  hash: 007f12ecf73417c6660b9942dc0fbc309c26f01dfd1fa4d88f808e906193706e
+/home/gilli/thesis/rts/c/opencl.h:
+  hash: bdc197e8197d001499c6d838d9f7092874d882c1b7e3fb1fce47d4d64885574e
+/home/gilli/thesis/docs/man/futhark-c.rst:
+  hash: e1cf54ea8da11e9d7eac651744206ce203886c33d29647e27f6793d02c5701be
+/home/gilli/thesis/prelude/prelude.fut:
+  hash: e4af87ff286a4d9ac42c4052fca6a201942a594da5a5aa82c2750ca0882167c8
+/home/gilli/thesis/docs/man/futhark-test.rst:
+  hash: 68d8005901d1f414e599889c5aef57ffb015119516fb15f5436d02536dd1e693
+/home/gilli/thesis/docs/versus-other-languages.rst:
+  hash: 53480e156f78e5ff96391fc0fc2de3be37a8a9310e063d7ca6e917802de19e13
+/home/gilli/thesis/prelude/functional.fut:
+  hash: 4dd07b4ac1d82a71d05c685284b29da46145426ee8023eef47c2534cf65a5b1d
+/home/gilli/thesis/rts/c/scalar.h:
+  hash: a48d0e6a45a8554664a31742cd6fc8dd50cd1a87a478bb2af3e2a069a5014e64
+/home/gilli/thesis/docs/hacking.rst:
+  hash: d0a69a4cbe97fa95ede6ef260bcfd6c48c7a7fb6062ad49018135674ba4f3fd7
+/home/gilli/thesis/docs/server-protocol.rst:
+  hash: 5f84c4e08817a9e185da6e2f6d8849507886b9875cfd6c07c052822b8a1ea617
+/home/gilli/thesis/docs/c-api.rst:
+  hash: 8766f4adf4724d676f5a420deada71f9e919df019e9b18bc1a2f88cc91d81842
+/home/gilli/thesis/rts/c/free_list.h:
+  hash: 33a4772fe366617b0e88618fa4a51294632ffa08240c749cf28cc1fb3442955a
+/home/gilli/thesis/rts/javascript/values.js:
+  hash: 00698d011454f87d8d7442bf1d2cf85d02eb51acd44b09b0b686301ed24db7c0
+/home/gilli/thesis/rts/python/tuning.py:
+  hash: 9f6a00991403a44bb3868eefbbf39f95ca753d3cb70b737e12875e587998180a
+/home/gilli/thesis/futhark.cabal:
+  hash: b19ebd45c14c7114892b87f7b90ea3fd58d1c1d9cfcb138909bc9182b4ae9f25
+/home/gilli/thesis/rts/python/memory.py:
+  hash: 286a8c97846077acea25509d5af04a3836362ba093599b925300bb93d8360d15
+/home/gilli/thesis/docs/c-porting-guide.rst:
+  hash: e6fb278528b2b6caf070d531acc6a5d27b6100f2092c1e4d902d9e525ea9ea83
+/home/gilli/thesis/rts/c/scheduler.h:
+  hash: 0d7ba333eae743c8e82b5d077204c295b8963d52304b181424ae984bce77e771
+/home/gilli/thesis/docs/performance.rst:
+  hash: e623b95f8baaed26ed6b35d167656fad4dd69217f872d3fcb745e1612fd26ae2
+/home/gilli/thesis/docs/man/futhark-wasm-multicore.rst:
+  hash: 68f91aaadbde344f28338eac9db8645fbf450ca1043978aba113cfe6a383a820
+/home/gilli/thesis/rts/javascript/wrapperclasses.js:
+  hash: e52bb485a115eaba16688d4a3d1120a2f0db4bfb51228eb75711dbfce6041372
+/home/gilli/thesis/docs/man/futhark-dataset.rst:
+  hash: 189d84ddf4be6826ca2d1c7261f93d5039be43ef32a1d3dcc2101c319d835f8f
+/home/gilli/thesis/rts/futhark-doc/style.css:
+  hash: 1426aa266a4ac495ec9f9a4d89913f9262ac28f6850bd515d34a96659424119e
+/home/gilli/thesis/docs/Makefile:
+  hash: a0915dda48a9d61d4c1390d08df294296235c5d9b90d214c9f4213d10e18fdd4
+/home/gilli/thesis/docs/man/futhark-doc.rst:
+  hash: 356d601210904ee5a9874fff9e3f16817f4e2d6750309e6cfb7defc78b4d635e
+/home/gilli/thesis/docs/man/futhark-wasm.rst:
+  hash: 2d94721960ae44b86ba037968af4f4f90cc069c1dd11ccb8b3cce4d08f06d2c6
+/home/gilli/thesis/rts/c/values.h:
+  hash: beb1216abddbbc1abf9e38984a3ef781a7163f76a8b5ca229b3669b9eb185777
+/home/gilli/thesis/docs/man/futhark-opencl.rst:
+  hash: f389698037ee03cc69fe22982d3dd1de1737d8084e7925d035c18c9e5e84a6c8
+/home/gilli/thesis/docs/binary-data-format.rst:
+  hash: c5e9af10ffaf0fc72cb7f612a65fd58e59e49dc8fa5db9610180f43805bd9665
+/home/gilli/thesis/docs/installation.rst:
+  hash: d82c5547fe5eecaa077515d4e5512414c6cf0ddb8a776819207e8db37a26c496
+/home/gilli/thesis/rts/c/cuda.h:
+  hash: 3d9cc530ccacdde006c259b6c9b1edc476afaade4f0de4ca5ce406a090e9a294
+/home/gilli/thesis/rts/python/panic.py:
+  hash: 02ae83d68f276881eb0df8e9482075c21d29046043e6feba7dc7727a65e269bb
+/home/gilli/thesis/docs/language-reference.rst:
+  hash: 297b8c6ebb803a3421b9336e5382840503060d76990472dcc91b0afbd62cc33f
+/home/gilli/thesis/docs/requirements.txt:
+  hash: 224eb23a8d779e880f00bdf2b8c45eb14be1ea31d0468c8d6e1df8c3d54685bc
+/home/gilli/thesis/docs/man/futhark-literate.rst:
+  hash: a322a5bbabc3563bca0cf53a5eb731472e514a2aca2a5cb7b40bd11a7878f502
+/home/gilli/thesis/rts/c/atomics.h:
+  hash: 3ddfed468e630b05ffe5445267f886d9bda09da6a78520e83ed50bf76eb174f7
+/home/gilli/thesis/rts/python/values.py:
+  hash: 855a4b19de7b907c3cb78d294c7183799d2828e49671d2acbdd2575b304ae0b0
+/home/gilli/thesis/docs/index.rst:
+  hash: e6a8e08c0837a703226542a508fdd03d2f4eb2f99f2b148c4d4e633ce03c5015
+/home/gilli/thesis/docs/man/futhark-run.rst:
+  hash: 08ef7e5c174e30db731148e868703d1c633fdcef7e2ace11f0de5fe7d1c4a07b
+/home/gilli/thesis/prelude/math.fut:
+  hash: 2b83dafa3aa4c109e69c7070114c4912b89080147e589f19c6fa5327d525382f
