@@ -486,9 +486,15 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   m
 
   -- missing map2 op orig_dst hist' to 
-  --last_sliced <- letExp "last_arr_sliced" $ BasicOp $ Index lis $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
-
+  
   hist_temp_bar <- lookupAdjVal $ patElemName pe
+  -- orig_dst_bar <-
+  --   letExp (baseString orig_dst ++ "_bar") $
+  --     Op $
+  --       Screma
+  --         wsubexp
+  --         [hist', hist_temp_bar]
+  --         (ScremaForm [] [] op_lam)
   void $ updateAdj orig_dst hist_temp_bar
 
   
@@ -509,29 +515,10 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   vs_bar_contrib <- letExp "vs_bar_contributions" $ BasicOp $ Replicate (Shape [n]) (head nes)
   f''''' <- mkIdentityLambda [Prim int64, t]
   vs_bar_contrib_scatter <- letExp "vs_bar_contrib_scatter" $ Op $ Scatter n' [sorted_is, vs_bar_contrib_reordered] f''''' [(Shape [n], 1, vs_bar_contrib)]
-  void $ updateAdj vs vs_bar_contrib_scatter-- second value here is the contributions, currently not used because it has to be [n] and all we have is [new_length]
+  void $ updateAdj vs vs_bar_contrib_scatter
 
-  -- rev : 
-  -- lambdaprim <- vjpLambda \eli vi ri -> li op vi op ri equiv to create another array same size as values, histo_bar_replicated :nt which replicates the result in the corresponding bin and then vjpStm the following
-  --    -- vjpStm -- histo let vsr map \li vi ri h_bar_i 
-  -- vsbar_reordered <- map3 lambdaprim ls vs_reordered rs
-  -- vsbar <- back_permute vsbar_reordered
-
-  -- This part is just to let dev -s return something useful
-  -- return the first w values in array ------- Change this vvv to the most recent expression
-  --last_sliced <- letExp "last_arr_sliced" $ BasicOp $ Index lis $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
-  -- This gives zero atm, who cares it stays just because it will compile
-  -- addStm $ Let pat aux $ BasicOp $ Index lis $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
-  -- m
-  -- Adjoint value is equal to sliced - allows me to sneakpeak at generated code
-  -- insAdj orig_dst hist'
-  -- insAdj orig_dst last_sliced
 diffGeneralRBI _ _ _ _ _ _ = error $ "Pattern matching failed in diffGeneralRBI"
 
--- TODO
--- 1. Remove all unnecessary parameters and clean up code (better comments?)
--- 3. Explain the pseudocode and the implemented code in the report
--- 4. Read through all aux functions and remove unneccessary parts
 diffPlusRBI ::
   Pat ->
   StmAux () ->
