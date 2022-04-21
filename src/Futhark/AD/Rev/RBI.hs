@@ -45,8 +45,8 @@ partition2Maker n bits xs = do
   -- let ps0 = scan (+) 0 (bits_inv)
   ps0_add_lam <- binOpLambda (Add Int64 OverflowUndef) bitType
   let ps0_add_scan = Scan ps0_add_lam [zeroSubExp]
-  f' <- mkIdentityLambda [Prim bitType]
-  ps0 <- letExp "ps0" $ Op $ Screma n [bits_inv] (ScremaForm [ps0_add_scan] [] f')
+  f <- mkIdentityLambda [Prim bitType]
+  ps0 <- letExp "ps0" $ Op $ Screma n [bits_inv] (ScremaForm [ps0_add_scan] [] f)
 
   -- let ps0_clean = map2 (*) bits_inv ps0 
   ps0clean_mul_lam <- binOpLambda (Mul Int64 OverflowUndef) bitType
@@ -55,8 +55,8 @@ partition2Maker n bits xs = do
   -- let ps1 = scan (+) 0 bits
   ps1_scanlam <- binOpLambda (Add Int64 OverflowUndef) bitType
   let ps1_scan = Scan ps1_scanlam [zeroSubExp]
-  f'' <- mkIdentityLambda [Prim bitType]
-  ps1 <- letExp "ps1" $ Op $ Screma n [bits] (ScremaForm [ps1_scan] [] f'')
+  f' <- renameLambda f
+  ps1 <- letExp "ps1" $ Op $ Screma n [bits] (ScremaForm [ps1_scan] [] f')
 
 
   -- let ps0_offset = reduce (+) 0 bits_inv    
@@ -100,9 +100,9 @@ partition2Maker n bits xs = do
   
   -- let scatter_inds = scatter inds ps_actual inds
   -- return scatter_inds
-  f''' <- mkIdentityLambda [Prim int64, Prim int64]
+  f'' <- mkIdentityLambda [Prim int64, Prim int64]
   xs_cpy <- letExp (baseString xs ++ "_copy") $ BasicOp $ Copy xs
-  return $ Scatter n [psactual, xs] f''' [(Shape [n], 1, xs_cpy)]
+  return $ Scatter n [psactual, xs] f'' [(Shape [n], 1, xs_cpy)]
 
 mkF :: Lambda -> ADM ([VName], Lambda)
 mkF lam = do
@@ -118,11 +118,14 @@ mkF lam = do
     bodyBind $ lambdaBody lam_r
   pure (map paramName aps, lam')
 
+-- let inp = map (\(flag, i) -> if f then (f, ne) else (f, vals[i-1])) flags iota
+-- in
 -- scan (\(v1, f1) (v2,f2) ->
---            let f = f1 || f2
---            let v = if f2 then ne else op v1 v2
---            in (v, f))
+--           let f = f1 || f2
+--           let v = if f2 then v2 else op v1 v2
+--           in (v, f)) inp
 -- Lift a lambda to produce an exlusive segmented scan operator.
+-- Synthesizes the exclusive part by rotating the vals to the left and inserting the neutral element at start of each segment
 mkSegScanExc :: Lambda -> [SubExp] -> SubExp -> VName -> VName -> ADM (SOAC SOACS) 
 mkSegScanExc lam ne n vals flags = do
   -- Get lambda return type
@@ -138,7 +141,7 @@ mkSegScanExc lam ne n vals flags = do
   iota_n <- letExp "iota_n" $ BasicOp $ Iota n (intConst Int64 0) (intConst Int64 1) Int64
   i <- newParam "i" $ Prim int64
 
-  -- (\(flag, i) -> if f then (f, ne) else (f, vals[i-1]))
+  -- tmp = (\(flag, i) -> if f then (f, ne) else (f, vals[i-1])) flags iota
 
   tmp_lam_body <- runBodyBuilder . localScope (scopeOfLParams [f, i]) $ do
     idx_minus_one <- letSubExp "idx_minus_one" $ BasicOp $ BinOp (Sub Int64 OverflowUndef) (Var $ paramName i) (intConst Int64 1)
@@ -164,6 +167,7 @@ mkSegScanExc lam ne n vals flags = do
   scan_body <- runBodyBuilder . localScope (scopeOfLParams params) $ do
     -- f_c = f1 || f2
     f_c <- letSubExp "f_c" $ BasicOp $ BinOp (Or Int8 ) (Var $ paramName f1) (Var $ paramName f2)
+
     -- v = if f2 then v2 else (lam v1 v2)     
     op_body <- mkLambda (v1++v2) $ do
       eLambda lam' (map (eSubExp . Var . paramName) (v1++v2))
@@ -263,7 +267,6 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   --     newidx = partition2 bits (iota n')
   --     [map(\i -> new_indexes[i]) newidx, map(\i -> new_bins[i]) newidx]
   i2 <- newVName "i2"
-
   indexesForLoop <- newVName "new_indexes_rebound"
   new_indexes_cpy <- letExp (baseString new_indexes ++ "_copyLoop") $ BasicOp $ Copy new_indexes
   new_indexes_type <- lookupType new_indexes
@@ -279,7 +282,7 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   let loop_vars = [(paramIndexes, Var new_indexes_cpy),(paramBins, Var new_bins_cpy)]
   
   -- bound = log2ceiling(w) (inner hist size aka number of bins)
-  let bound = Constant $ IntValue $ intValue Int64 (2::Integer)
+  let bound = Constant $ IntValue $ intValue Int64 (2::Integer) -- <------ CHANGE THIS ASAP
 
   ((idxres, binsres), stms) <- runBuilderT' . localScope (scopeOfFParams [paramIndexes, paramBins]) $ do
     -- bits = map (\ind_x -> (ind_x >> digit_n) & 1) ind
@@ -481,9 +484,9 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   -- hist' <- letExp "hist'" $ Op hist'
   addStm $ Let pat aux $ Op hist'
   m
+
   -- missing map2 op orig_dst hist' to 
-  --addStm $ Let pat aux hist'Op
-    --last_sliced <- letExp "last_arr_sliced" $ BasicOp $ Index lis $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
+  --last_sliced <- letExp "last_arr_sliced" $ BasicOp $ Index lis $ fullSlice (Prim bitType) [DimSlice zeroSubExp wsubexp (constant (1 :: Int64))]
 
   hist_temp_bar <- lookupAdjVal $ patElemName pe
   void $ updateAdj orig_dst hist_temp_bar
@@ -503,7 +506,6 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   vjpMap ops [AdjVal $ Var hist_temp_bar_repl] n' lam_adj [lis, sorted_vals, ris] -- Doesn't support lists
 
   vs_bar_contrib_reordered <- lookupAdjVal sorted_vals
-  --sorted_is
   vs_bar_contrib <- letExp "vs_bar_contributions" $ BasicOp $ Replicate (Shape [n]) (head nes)
   f''''' <- mkIdentityLambda [Prim int64, t]
   vs_bar_contrib_scatter <- letExp "vs_bar_contrib_scatter" $ Op $ Scatter n' [sorted_is, vs_bar_contrib_reordered] f''''' [(Shape [n], 1, vs_bar_contrib)]
