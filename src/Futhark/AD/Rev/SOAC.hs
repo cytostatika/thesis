@@ -19,8 +19,8 @@ import Futhark.IR.SOACS
 import Futhark.Tools
 import Futhark.Util (chunks)
 
-data BinOpType = Addition BinOp | Multiplication BinOp | MinMax BinOp
 
+data BinOpType = Addition BinOp | Multiplication BinOp | MinMax BinOp
 
 -- We split any multi-op scan or reduction into multiple operations so
 -- we can detect special cases.  Post-AD, the result may be fused
@@ -28,7 +28,7 @@ data BinOpType = Addition BinOp | Multiplication BinOp | MinMax BinOp
 splitScanRed ::
   VjpOps ->
   ([a] -> ADM (ScremaForm SOACS), a -> [SubExp]) ->
-  (Pat, StmAux (), [a], SubExp, [VName]) ->
+  (Pat Type, StmAux (), [a], SubExp, [VName]) ->
   ADM () ->
   ADM ()
 splitScanRed vjpops (opSOAC, opNeutral) (pat, aux, ops, w, as) m = do
@@ -42,13 +42,13 @@ splitScanRed vjpops (opSOAC, opNeutral) (pat, aux, ops, w, as) m = do
       onOps _ _ _ = m
   onOps ops pat_per_op as_per_op
 
-commonSOAC :: Pat -> StmAux () -> SOAC SOACS -> ADM () -> ADM [Adj]
+commonSOAC :: Pat Type -> StmAux () -> SOAC SOACS -> ADM () -> ADM [Adj]
 commonSOAC pat aux soac m = do
   addStm $ Let pat aux $ Op soac
   m
   returnSweepCode $ mapM lookupAdj $ patNames pat
 
-vjpSOAC :: VjpOps -> Pat -> StmAux () -> SOAC SOACS -> ADM () -> ADM ()
+vjpSOAC :: VjpOps -> Pat Type -> StmAux () -> SOAC SOACS -> ADM () -> ADM ()
 vjpSOAC ops pat aux soac@(Screma w as form) m
   | Just reds <- isReduceSOAC form,
     length reds > 1 =
@@ -128,7 +128,7 @@ vjpSOAC _ _ _ soac _ =
   error $ "vjpSOAC unhandled:\n" ++ pretty soac
  
 
-isBinOpTypeLam :: Lambda -> Maybe BinOpType
+isBinOpTypeLam :: Lambda SOACS -> Maybe BinOpType
 isBinOpTypeLam lam = isSpecOpLam isAddOp $ filterMapOp lam
   where
     isAddOp bop@(Add _ _) = Just $ Addition bop
@@ -156,7 +156,7 @@ isBinOpTypeLam lam = isSpecOpLam isAddOp $ filterMapOp lam
 -- Pattern Matches special lambda cases:
 --   plus, multiplication, min, max, which are all commutative.
 -- Succeeds for (\ x y -> x binop y) or (\x y -> y binop x).
-isSpecOpLam :: (BinOp -> Maybe BinOpType) -> Lambda -> Maybe BinOpType
+isSpecOpLam :: (BinOp -> Maybe BinOpType) -> Lambda SOACS -> Maybe BinOpType
 isSpecOpLam isOp lam =
   isRedStm
     (map paramName $ lambdaParams lam)

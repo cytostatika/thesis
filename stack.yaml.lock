@@ -12,12 +12,12 @@ packages:
   original:
     hackage: futhark-data-1.0.3.0
 - completed:
-    hackage: futhark-server-1.1.2.0@sha256:a0853cae64802cf532684451eecbde2e724423ba460dac954982ef953cb8699c,1357
+    hackage: futhark-server-1.1.2.1@sha256:17aac56e1f4ac64e3c7ba1966ed16c196791110a1c94cf4c435b5240d9bfcc3f,1357
     pantry-tree:
       size: 295
-      sha256: 2717e4ceaf3b5ce5b40af22af84f6eaef7921eeba7620b06c8e3d37b37d8e3e3
+      sha256: c2235e13a2340694f1ff37bdeaa51a8eaae6cb2dfe7606555dc4ab8ce842f7be
   original:
-    hackage: futhark-server-1.1.2.0
+    hackage: futhark-server-1.1.2.1
 - completed:
     hackage: futhark-manifest-1.0.0.0@sha256:d38398022482d4411fcef39b98dc56ae938fc1d1171cbc7bfc79399814f45f25,1789
     pantry-tree:
@@ -25,13 +25,6 @@ packages:
       sha256: 6812e1031fc1969116dd806f3d7e3c1e6d9b4f0f1300757cbf30c22eb620a29e
   original:
     hackage: futhark-manifest-1.0.0.0
-- completed:
-    hackage: githash-0.1.6.1@sha256:a81001a9766438b3384d8f56584235f21c285889c6d4084f98dee8260010e0ac,1527
-    pantry-tree:
-      size: 616
-      sha256: e58a67fe19d84ff1d650d22174deb762df1b23d9475b96248e78e798266863b9
-  original:
-    hackage: githash-0.1.6.1@sha256:a81001a9766438b3384d8f56584235f21c285889c6d4084f98dee8260010e0ac,1527
 - completed:
     hackage: aeson-2.0.1.0@sha256:8d6ca9d71a52c2148c7156cde09dc514ef192a41dce21e9bd32487e64a5b30f6,6245
     pantry-tree:
@@ -41,7 +34,7 @@ packages:
     hackage: aeson-2.0.1.0
 snapshots:
 - completed:
-    size: 468996
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2021/6/19.yaml
-    sha256: 3f6833c2dc01fff47f10cf1493b42b3d1d1b017c74b3829eb5bd937e74fb879d
-  original: nightly-2021-06-19
+    size: 621061
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2022/1/14.yaml
+    sha256: ccdaaea68d7dbda3683e1590feea13c27187cd8fb4bd23a580de7f94666802be
+  original: nightly-2022-01-14

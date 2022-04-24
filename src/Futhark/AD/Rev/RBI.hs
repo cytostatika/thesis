@@ -104,7 +104,7 @@ partition2Maker n bits xs = do
   xs_cpy <- letExp (baseString xs ++ "_copy") $ BasicOp $ Copy xs
   return $ Scatter n [psactual, xs] f'' [(Shape [n], 1, xs_cpy)]
 
-mkF :: Lambda -> ADM ([VName], Lambda)
+mkF :: Lambda SOACS -> ADM ([VName], Lambda SOACS)
 mkF lam = do
   lam_l <- renameLambda lam
   lam_r <- renameLambda lam
@@ -126,7 +126,7 @@ mkF lam = do
 --           in (v, f)) inp
 -- Lift a lambda to produce an exlusive segmented scan operator.
 -- Synthesizes the exclusive part by rotating the vals to the left and inserting the neutral element at start of each segment
-mkSegScanExc :: Lambda -> [SubExp] -> SubExp -> VName -> VName -> ADM (SOAC SOACS) 
+mkSegScanExc :: Lambda SOACS -> [SubExp] -> SubExp -> VName -> VName -> ADM (SOAC SOACS) 
 mkSegScanExc lam ne n vals flags = do
   -- Get lambda return type
   let rt = lambdaReturnType lam
@@ -191,10 +191,10 @@ mkSegScanExc lam ne n vals flags = do
 
 diffGeneralRBI ::
   VjpOps ->
-  Pat ->
+  Pat Type ->
   StmAux () ->
   (SubExp, [VName]) ->
-  (Shape, [SubExp], VName, Lambda) ->
+  (Shape, [SubExp], VName, Lambda SOACS) ->
   ADM () ->
   ADM ()
 diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, orig_dst, f) m = do
@@ -520,10 +520,10 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
 diffGeneralRBI _ _ _ _ _ _ = error $ "Pattern matching failed in diffGeneralRBI"
 
 diffPlusRBI ::
-  Pat ->
+  Pat Type ->
   StmAux () ->
-  (SubExp, [VName], Lambda) ->
-  (Shape, SubExp, VName, SubExp, Lambda) ->
+  (SubExp, [VName], Lambda SOACS) ->
+  (Shape, SubExp, VName, SubExp, Lambda SOACS) ->
   ADM () ->
   ADM ()
 diffPlusRBI pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w, rf, orig_dst, ne, add_lam) m = do
@@ -551,10 +551,10 @@ diffPlusRBI pat@(Pat [pe]) aux (n, arrs@([is, vs]), f) (w, rf, orig_dst, ne, add
 diffPlusRBI _ _ _ _ _ = error "Pattern matching failed in diffPlusRBI"
   
 diffMulRBI ::
-  Pat ->
+  Pat Type ->
   StmAux () ->
   (SubExp, [VName]) ->
-  (Shape, SubExp, VName, SubExp, Lambda, BinOp) ->
+  (Shape, SubExp, VName, SubExp, Lambda SOACS, BinOp) ->
   ADM () ->
   ADM ()
 diffMulRBI (Pat [pe]) aux (n, [is, vs]) (w@(Shape [wsubexp]), rf, orig_dst, ne, mul_lam, mulOp) m = do
@@ -763,7 +763,7 @@ diffMulRBI (Pat [pe]) aux (n, [is, vs]) (w@(Shape [wsubexp]), rf, orig_dst, ne, 
 diffMulRBI _ _ _ _ _ = error "Pattern matching failed in diffMulRBI"
 
 diffMinMaxRBI ::
-  Pat ->
+  Pat Type ->
   StmAux () ->
   (SubExp, [VName]) ->
   (Shape, SubExp, VName, SubExp, BinOp) ->
@@ -874,7 +874,7 @@ getBinOpPlus _ = error "In getBinOpMul, Rev.hs: input Cert not supported"
 -- meaning the min/max value tupled with the minimal index where
 --   that value was found (when duplicates exist). We use `-1` as
 --   the neutral element of the index.
-mkMinMaxIndLam :: PrimType -> BinOp -> ADM Lambda
+mkMinMaxIndLam :: PrimType -> BinOp -> ADM (Lambda SOACS)
 mkMinMaxIndLam t minmax_op = do
   fargs_vals <- mapM (`newParam` Prim t) ["acc_v", "arg_v"]
   fargs_inds <- mapM (`newParam` Prim int64) ["acc_ind", "arg_ind"]
@@ -931,10 +931,10 @@ mind_eq_min1 ind =
 -- )
 -- The idea is that you do not want to put under the `if` something
 --     that is an array because it would not flatten well!
-genIdxLamBdy :: VName -> [(Shape, Param Type)] -> Type -> ADM Body
+genIdxLamBdy :: VName -> [(Shape, Param Type)] -> Type -> ADM (Body SOACS)
 genIdxLamBdy as wpis = genRecLamBdy as wpis []
   where
-    genRecLamBdy :: VName -> [(Shape, Param Type)] -> [Param Type] -> Type -> ADM Body
+    genRecLamBdy :: VName -> [(Shape, Param Type)] -> [Param Type] -> Type -> ADM (Body SOACS)
     genRecLamBdy arr w_pis nest_pis (Array t (Shape []) _) =
       genRecLamBdy arr w_pis nest_pis (Prim t)
     genRecLamBdy arr w_pis nest_pis (Array t (Shape (s : ss)) u) = do
