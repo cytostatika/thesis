@@ -235,7 +235,7 @@
 /home/gilli/thesis/src/Futhark/Compiler.hs:
   hash: 09ba4bae7e3b4d5658134f8301d10d40f412fa7b25d963990f3007e177014c4a
 /home/gilli/thesis/.git/refs/heads/mychanges:
-  hash: cb0b8bfbc720f86a302ada2045e1a22a5660c39d51612f4af2b6432c4772b266
+  hash: d673d18f3eb753e739490311dd7df262e0546e3f094274cfd7ea50d1ca185731
 /home/gilli/thesis/rts/c/chaselev.h:
   hash: 9fa34c4b509ea6db4d1000a881aa065fd13fc2361919662ab83a119620a38124
 /home/gilli/thesis/.git/HEAD:
@@ -505,7 +505,7 @@
 /home/gilli/thesis/src/Futhark/Pass/ExplicitAllocations/SegOp.hs:
   hash: 450659733ca65ee5f86d813c5c7bbbadd675d342ec7d63eec53dd16969815e40
 /home/gilli/thesis/src/Futhark/AD/Rev/RBI.hs:
-  hash: 93b28c6810ced069d858bbef10708588767af78898bc910c2e1d6fc08695ba4b
+  hash: a6665f73761eb45d802056cd5483fe9296ca4591b75632eb613af160d4fb8ef2
 /home/gilli/thesis/src/Futhark/Analysis/Interference.hs:
   hash: f9e1f364331836de09ccd4ffe0d0287beb2897af29a00c0395b39c8d1d392caf
 /home/gilli/thesis/src/Futhark/CLI/Defs.hs:
@@ -519,7 +519,7 @@
 /home/gilli/thesis/src/Futhark/Internalise/FreeVars.hs:
   hash: a48811e351cbb3c1b5e300f58dd2d6f42a2937b7303b2b0a826af85b61ef2c6f
 /home/gilli/thesis/.git/index:
-  hash: 96121cf7ace3936e7183ae3778af6fb8c94f4dcc0789331d973bf9495a7a6dc6
+  hash: 19264a547ddb9cb9fd2fb2c461b7574f9174e117c3a78375f648056421b5da8b
 /home/gilli/thesis/src/Language/Futhark/Interpreter.hs:
   hash: 0fc2e1d241996268f75c4eb1f57dd592550a8223fdc3d0efae2eb35803df312b
 /home/gilli/thesis/src/Futhark/AD/Rev/Monad.hs:

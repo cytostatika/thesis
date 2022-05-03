@@ -9,6 +9,34 @@ import Futhark.IR.SOACS
 import Futhark.Tools
 import Futhark.Transform.Rename
 
+data FirstOrSecond = WrtFirst | WrtSecond
+
+-- computes `d(x op y)/dx` or d(x op y)/dy
+mkScanAdjointLam :: VjpOps -> Lambda SOACS -> FirstOrSecond -> ADM (Lambda SOACS)
+mkScanAdjointLam ops lam0 which = do
+  let len = length $ lambdaReturnType lam0
+  lam <- renameLambda lam0
+  let p2diff =
+        case which of
+          WrtFirst -> take len $ lambdaParams lam
+          WrtSecond -> drop len $ lambdaParams lam
+  p_adjs <- mapM unitAdjOfType (lambdaReturnType lam)
+  vjpLambda ops p_adjs (map paramName p2diff) lam
+  
+  
+-- Takes name of two params, a binOp and the type of params and gives a lambda of that application
+mkSimpleLambda :: String -> String -> BinOp -> Type -> ADM (Lambda SOACS)
+mkSimpleLambda x_name y_name binOp t = do
+  x <- newParam x_name t
+  y <- newParam y_name t
+  lam_body <- runBodyBuilder . localScope (scopeOfLParams [x,y]) $ do
+    eBody
+      [
+        eBinOp binOp
+        (eParam x)
+        (eParam y)
+      ]
+  return $ Lambda [x, y] lam_body [t]
 eReverse :: MonadBuilder m => VName -> m VName
 eReverse arr = do
   arr_t <- lookupType arr
@@ -197,7 +225,7 @@ diffGeneralRBI ::
   (Shape, [SubExp], VName, Lambda SOACS) ->
   ADM () ->
   ADM ()
-diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, orig_dst, f) m = do
+diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]), nes, orig_dst, f) m = do
   let bitType = int64
   let zeroSubExp = Constant $ IntValue $ intValue Int64 (0 :: Integer)
   let oneSubExp = Constant $ IntValue $ intValue Int64 (1 :: Integer)
@@ -328,7 +356,7 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   sorted_vals_body <- runBodyBuilder . localScope (scopeOfLParams [val_idx]) $ do
     body <- letSubExp "body" $ BasicOp $ Index vs (fullSlice (Prim int64) [DimFix (Var (paramName val_idx))])     
     resultBodyM [body]
-  let sorted_vals_lambda = Lambda [val_idx] sorted_vals_body [Prim int64]
+  let sorted_vals_lambda = Lambda [val_idx] sorted_vals_body [t]
   sorted_vals <- letExp "sorted_vals" $ Op $ Screma n' [sorted_is] $ ScremaForm [][] sorted_vals_lambda
 
   let trueSE  = Constant $ IntValue $ intValue Int8 (1 :: Integer)
@@ -425,50 +453,46 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   --                   ) (iota n')
 
   iprim <- newParam "iprim" $ Prim int64
-  seg_end_idx_body <- runBodyBuilder . localScope (scopeOfLParams [iprim]) $ do
+  current_bin <- newParam "current_bin" $ Prim int64
+  seg_end_idx_body <- runBodyBuilder . localScope (scopeOfLParams [iprim, current_bin]) $ do
     idx_plus_one <- letSubExp "idx_plus_one" $ BasicOp $ BinOp (Add Int64 OverflowUndef) (Var $ paramName iprim) (intConst Int64 1)
-    next_elem <- letExp "next_elem" $ BasicOp $ Index final_flags (fullSlice (Prim int64) [DimFix idx_plus_one]) 
     lastElemIdx <- letExp "lastElemIdx" $ BasicOp $ BinOp (Sub Int64 OverflowUndef) (n') (intConst Int64 1)
 
-    let last_elem =
-          eCmpOp
-            (CmpEq $ IntType Int64)
-            (eSubExp $ Var $ paramName iprim)
-            (eSubExp $ Var $ lastElemIdx)
-
-    let next_is_new_seg =
-          eCmpOp
-            (CmpEq $ IntType Int8)
-            (eSubExp $ Var next_elem)
-            (eSubExp $ Constant $ IntValue $ Int8Value 1)
+    let isLastElem = eCmpOp (CmpEq $ IntType Int64) (eSubExp $ Var $ paramName iprim) (eSubExp $ Var $ lastElemIdx)
 
     eBody
       [
         eIf
-        last_elem
-        (resultBodyM $ [Var $ paramName iprim])
+        isLastElem
+        (resultBodyM $ [Var $ paramName current_bin])
         (eBody
           [
             eIf
-            next_is_new_seg
-            (resultBodyM [Var $ paramName iprim])
+              ( do
+                  next_elem <- letExp "next_elem" $ BasicOp $ Index final_flags (fullSlice (Prim int64) [DimFix idx_plus_one])
+                  (eCmpOp
+                    (CmpEq $ IntType Int8)
+                    (eSubExp $ Var next_elem)
+                    (eSubExp $ Constant $ IntValue $ Int8Value 1))
+              )
+            (resultBodyM [Var $ paramName current_bin])
             (resultBodyM [Constant $ IntValue $ Int64Value (-1)])
           ]
         )
       ]
 
-  let seg_end_idx_lam = Lambda [iprim] seg_end_idx_body [Prim int64]
-  seg_end_idx <- letExp "seg_end_idx" $ Op $ Screma n' [iota_n'] $ ScremaForm [][] seg_end_idx_lam
+  let seg_end_idx_lam = Lambda [iprim, current_bin] seg_end_idx_body [Prim int64]
+  seg_end_idx <- letExp "seg_end_idx" $ Op $ Screma n' [iota_n', sorted_bins] $ ScremaForm [][] seg_end_idx_lam
 
   --bin_lst_lis   = scatter (replicate ne (len hist_orig)) seg_end_idx lis
   bin_last_lis_dst <- letExp "bin_last_lis_dst" $ BasicOp $ Replicate w (head nes)
-  f''' <- mkIdentityLambda [Prim int64, Prim int64]
+  f''' <- mkIdentityLambda [Prim int64, t]
   bin_last_lis <- letExp "bin_last_lis" $ Op $ Scatter n' [seg_end_idx, lis] f''' [(w, 1, bin_last_lis_dst)]
 
   -- lis was exc-scan, so we need the last element aswell.
   -- bin_last_v_dst = scatter (replicate ne (len hist_orig)) seg_end_idx sorted_vals
   bin_last_v_dst <- letExp "bin_last_v_dst" $ BasicOp $ Replicate w (head nes)
-  f'''' <- mkIdentityLambda [Prim int64, Prim int64]
+  f'''' <- mkIdentityLambda [Prim int64, t]
   bin_last_v <- letExp "bin_last_v" $ Op $ Scatter n' [seg_end_idx, sorted_vals] f'''' [(w, 1, bin_last_v_dst)]
 
   -- Temp histogram of only our input values.
@@ -481,41 +505,104 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]),nes, 
   op <- mkLambda (lis_param ++ v_param) $ do
     eLambda op_lam (map (eSubExp . Var . paramName) (lis_param ++ v_param))
   let hist' = Screma wsubexp [bin_last_lis, bin_last_v] $ ScremaForm [] [] op
-  -- hist' <- letExp "hist'" $ Op hist'
-  addStm $ Let pat aux $ Op hist'
+  hist_temp <- letExp "hist'_contrib" $ Op hist'
+
+
+  orig_param <- mapM (newParam "orig_param") rt
+  temp_param   <- mapM (newParam "temp_param") rt
+  op_lam2 <- renameLambda f
+  op2 <- mkLambda (orig_param ++ temp_param) $ do
+    eLambda op_lam2 (map (eSubExp . Var . paramName) (orig_param ++ temp_param))
+  hist_res <- letExp "hist'" $ Op $ Screma wsubexp [orig_dst, hist_temp] $ ScremaForm [] [] op2
+  -- addStm $ Let pat aux $ Op hist'
+  letBind pat $ BasicOp $ SubExp $ Var hist_res
   m
 
-  -- missing map2 op orig_dst hist' to 
-  
-  hist_temp_bar <- lookupAdjVal $ patElemName pe
-  -- orig_dst_bar <-
-  --   letExp (baseString orig_dst ++ "_bar") $
-  --     Op $
-  --       Screma
-  --         wsubexp
-  --         [hist', hist_temp_bar]
-  --         (ScremaForm [] [] op_lam)
-  void $ updateAdj orig_dst hist_temp_bar
 
-  
-  -- let t = int64 -- TODO: change this to type 
+  -- Lookup adjoint of histogram
+  hist_res_bar <- lookupAdjVal $ patElemName pe
 
-  -- hist_temp_bar_repl = map (\ ind -> hist_tmp_bar[ind]) sorted_bins
+  -- Rename original function
+  hist_temp_lam <- renameLambda f
+  hist_orig_lam <- renameLambda f
+
+  -- Lift lambda to compute differential wrt. first or second element.
+  hist_orig_bar_temp_lambda <- mkScanAdjointLam ops hist_orig_lam WrtFirst
+  hist_temp_bar_temp_lambda <- mkScanAdjointLam ops hist_temp_lam WrtSecond
+
+  -- Lambda for multiplying hist_res_bar onto result of differentiation 
+  
+  let (Prim pt)   = t
+  let mulOp = getMulOp pt
+  mul_hist_orig_res_adj <- mkSimpleLambda "orig_adj" "res_adj" mulOp (t)
+  mul_hist_temp_res_adj <- mkSimpleLambda "temp_adj" "res_adj" mulOp (t)
+
+  -- Compute adjoint of each bin of each histogram (original and added values).
+  hist_orig_bar_temp <- letExp "hist_orig_bar_temp" $ Op $ Screma wsubexp [orig_dst, hist_temp] $ ScremaForm [][] hist_orig_bar_temp_lambda
+  hist_orig_bar      <- letExp "hist_orig_bar" $ Op $ Screma wsubexp [hist_orig_bar_temp, hist_res_bar] $ ScremaForm [][] mul_hist_orig_res_adj
+
+  hist_temp_bar_temp <- letExp "hist_temp_bar_temp" $ Op $ Screma wsubexp [orig_dst, hist_temp] $ ScremaForm [][] hist_temp_bar_temp_lambda
+  hist_temp_bar      <- letExp "hist_temp_bar" $ Op $ Screma wsubexp [hist_temp_bar_temp, hist_res_bar] $ ScremaForm [][] mul_hist_temp_res_adj
+
+  -- Set adjoint of orig_dst for future use
+  insAdj orig_dst hist_orig_bar
+
+  -- Now for adjoint of vs
+  -- For each bin in sorted_bins we fetch the adjoint of the corresponding bucket in hist_temp_bar
+  -- hist_temp_bar_repl = map (\bin -> hist_temp_bar[bin]) sorted_bins
   sorted_bin_param <- newParam "sorted_bin_p" $ Prim int64
   hist_temp_bar_repl_body <- runBodyBuilder . localScope (scopeOfLParams [sorted_bin_param]) $ do
-    body <- letSubExp "body" $ BasicOp $ Index hist_temp_bar (fullSlice (Prim int64) [DimFix (Var (paramName sorted_bin_param))])     
-    resultBodyM [body]
+    hist_temp_adj <- letSubExp "hist_temp_adj" $ BasicOp $ Index hist_temp_bar (fullSlice (Prim int64) [DimFix (Var (paramName sorted_bin_param))])     
+    resultBodyM [hist_temp_adj]
   let hist_temp_bar_repl_lambda = Lambda [sorted_bin_param] hist_temp_bar_repl_body [t]
   hist_temp_bar_repl <- letExp "hist_temp_bar_repl" $ Op $ Screma n' [sorted_bins] $ ScremaForm [][] hist_temp_bar_repl_lambda
 
+  -- We now use vjpMap to compute vs_bar
   (_, lam_adj) <- mkF f
   vjpMap ops [AdjVal $ Var hist_temp_bar_repl] n' lam_adj [lis, sorted_vals, ris] -- Doesn't support lists
 
+  -- We are only using values not sorted out. Need to add 0 for each value that was sorted out.
+  -- Get adjoints of values with valid bins (computed by running vjpMap before)
   vs_bar_contrib_reordered <- lookupAdjVal sorted_vals
-  vs_bar_contrib <- letExp "vs_bar_contributions" $ BasicOp $ Replicate (Shape [n]) (head nes)
+  -- Replicate array of 0's
+  vs_bar_contrib_dst <- letExp "vs_bar_contrib_dst" $ BasicOp $ Replicate (Shape [n]) (head nes) -- OBS!! Currently not 0
+  -- Scatter adjoints to 0-array.
   f''''' <- mkIdentityLambda [Prim int64, t]
-  vs_bar_contrib_scatter <- letExp "vs_bar_contrib_scatter" $ Op $ Scatter n' [sorted_is, vs_bar_contrib_reordered] f''''' [(Shape [n], 1, vs_bar_contrib)]
-  void $ updateAdj vs vs_bar_contrib_scatter
+  vs_bar_contrib <- letExp "vs_bar_contrib" $ Op $ Scatter n' [sorted_is, vs_bar_contrib_reordered] f''''' [(Shape [n], 1, vs_bar_contrib_dst)]
+  -- Update the adjoint of vs to be vs_bar_contrib
+  updateAdj vs vs_bar_contrib-- second value here is the contributions, currently not used because it has to be [n] and all we have is [new_length]
+
+  -- -- missing map2 op orig_dst hist' to 
+  
+  -- hist_temp_bar <- lookupAdjVal $ patElemName pe
+  -- -- orig_dst_bar <-
+  -- --   letExp (baseString orig_dst ++ "_bar") $
+  -- --     Op $
+  -- --       Screma
+  -- --         wsubexp
+  -- --         [hist', hist_temp_bar]
+  -- --         (ScremaForm [] [] op_lam)
+  -- void $ updateAdj orig_dst hist_temp_bar
+
+  
+  -- -- let t = int64 -- TODO: change this to type 
+
+  -- -- hist_temp_bar_repl = map (\ ind -> hist_tmp_bar[ind]) sorted_bins
+  -- sorted_bin_param <- newParam "sorted_bin_p" $ Prim int64
+  -- hist_temp_bar_repl_body <- runBodyBuilder . localScope (scopeOfLParams [sorted_bin_param]) $ do
+  --   body <- letSubExp "body" $ BasicOp $ Index hist_temp_bar (fullSlice (Prim int64) [DimFix (Var (paramName sorted_bin_param))])     
+  --   resultBodyM [body]
+  -- let hist_temp_bar_repl_lambda = Lambda [sorted_bin_param] hist_temp_bar_repl_body [t]
+  -- hist_temp_bar_repl <- letExp "hist_temp_bar_repl" $ Op $ Screma n' [sorted_bins] $ ScremaForm [][] hist_temp_bar_repl_lambda
+
+  -- (_, lam_adj) <- mkF f
+  -- vjpMap ops [AdjVal $ Var hist_temp_bar_repl] n' lam_adj [lis, sorted_vals, ris] -- Doesn't support lists
+
+  -- vs_bar_contrib_reordered <- lookupAdjVal sorted_vals
+  -- vs_bar_contrib <- letExp "vs_bar_contributions" $ BasicOp $ Replicate (Shape [n]) (head nes)
+  -- f''''' <- mkIdentityLambda [Prim int64, t]
+  -- vs_bar_contrib_scatter <- letExp "vs_bar_contrib_scatter" $ Op $ Scatter n' [sorted_is, vs_bar_contrib_reordered] f''''' [(Shape [n], 1, vs_bar_contrib)]
+  -- void $ updateAdj vs vs_bar_contrib_scatter
 
 diffGeneralRBI _ _ _ _ _ _ = error $ "Pattern matching failed in diffGeneralRBI"
 
@@ -968,3 +1055,8 @@ withinBounds :: [(Shape, VName)] -> TPrimExp Bool VName
 withinBounds [] = TPrimExp $ ValueExp (BoolValue True)
 withinBounds [(q, i)] = (le64 i .<. pe64 (shapeSize 0 q)) .&&. (pe64 (intConst Int64 (-1)) .<. le64 i)
 withinBounds (qi : qis) = withinBounds [qi] .&&. withinBounds qis
+
+getMulOp :: PrimType -> BinOp
+getMulOp (IntType t)   = Mul t OverflowUndef
+getMulOp (FloatType t) = FMul t
+getMulOp _             = error $ "Unsupported type in getMulOp"

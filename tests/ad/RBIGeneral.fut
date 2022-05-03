@@ -12,9 +12,9 @@
 
 
 --hardcoding it to i64 for now
-let histo_mul [w][n] (is: [n]i64) (vs: [n]i64, dest: [w]i64) : [w]i64 =
-  reduce_by_index (copy dest) (*) 1i64 is vs
+let histo_mul [w][n] (is: [n]i64) (vs: [n]f32, dest: [w]f32) : [w]f32 =
+  reduce_by_index (copy dest) (*) 1f32 is vs
 
-entry main [n][w](is: [n]i64) (vs: [n]i64) (hist_bar': [w]i64) =
-  vjp (histo_mul is) (vs, replicate w 1i64) hist_bar'
+entry main [n][w](is: [n]i64) (vs: [n]f32) (hist_bar': [w]f32) =
+  vjp (histo_mul is) (vs, replicate w 1f32) hist_bar'
    
