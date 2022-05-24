@@ -289,8 +289,8 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]), nes,
   new_bins <- letExp "new_bins" $ Op $ Screma n' [new_indexes] $ ScremaForm [][] new_bins_lambda
 
 
-  -- [sorted_is, sorted_bins] = 
   --   loop over [new_indexes, new_bins] for i < 6 do 
+  -- [sorted_is, sorted_bins] = 
   --     bits = map (\ind_x -> (ind_x >> i) & 1) new_bins
   --     newidx = partition2 bits (iota n')
   --     [map(\i -> new_indexes[i]) newidx, map(\i -> new_bins[i]) newidx]
@@ -310,7 +310,7 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]), nes,
   let loop_vars = [(paramIndexes, Var new_indexes_cpy),(paramBins, Var new_bins_cpy)]
   
   -- bound = log2ceiling(w) (inner hist size aka number of bins)
-  let bound = Constant $ IntValue $ intValue Int64 (2::Integer) -- <------ CHANGE THIS ASAP
+  let bound = Constant $ IntValue $ intValue Int64 (8::Integer) -- <------ This is not correct
 
   ((idxres, binsres), stms) <- runBuilderT' . localScope (scopeOfFParams [paramIndexes, paramBins]) $ do
     -- bits = map (\ind_x -> (ind_x >> digit_n) & 1) ind
@@ -565,44 +565,13 @@ diffGeneralRBI ops pat@(Pat [pe]) aux (n, [inds, vs]) (w@(Shape [wsubexp]), nes,
   -- Get adjoints of values with valid bins (computed by running vjpMap before)
   vs_bar_contrib_reordered <- lookupAdjVal sorted_vals
   -- Replicate array of 0's
-  vs_bar_contrib_dst <- letExp "vs_bar_contrib_dst" $ BasicOp $ Replicate (Shape [n]) (head nes) -- OBS!! Currently not 0
+  t_zero <- letSubExp "t_zero" $ zeroExp t
+  vs_bar_contrib_dst <- letExp "vs_bar_contrib_dst" $ BasicOp $ Replicate (Shape [n]) t_zero
   -- Scatter adjoints to 0-array.
   f''''' <- mkIdentityLambda [Prim int64, t]
   vs_bar_contrib <- letExp "vs_bar_contrib" $ Op $ Scatter n' [sorted_is, vs_bar_contrib_reordered] f''''' [(Shape [n], 1, vs_bar_contrib_dst)]
   -- Update the adjoint of vs to be vs_bar_contrib
-  updateAdj vs vs_bar_contrib-- second value here is the contributions, currently not used because it has to be [n] and all we have is [new_length]
-
-  -- -- missing map2 op orig_dst hist' to 
-  
-  -- hist_temp_bar <- lookupAdjVal $ patElemName pe
-  -- -- orig_dst_bar <-
-  -- --   letExp (baseString orig_dst ++ "_bar") $
-  -- --     Op $
-  -- --       Screma
-  -- --         wsubexp
-  -- --         [hist', hist_temp_bar]
-  -- --         (ScremaForm [] [] op_lam)
-  -- void $ updateAdj orig_dst hist_temp_bar
-
-  
-  -- -- let t = int64 -- TODO: change this to type 
-
-  -- -- hist_temp_bar_repl = map (\ ind -> hist_tmp_bar[ind]) sorted_bins
-  -- sorted_bin_param <- newParam "sorted_bin_p" $ Prim int64
-  -- hist_temp_bar_repl_body <- runBodyBuilder . localScope (scopeOfLParams [sorted_bin_param]) $ do
-  --   body <- letSubExp "body" $ BasicOp $ Index hist_temp_bar (fullSlice (Prim int64) [DimFix (Var (paramName sorted_bin_param))])     
-  --   resultBodyM [body]
-  -- let hist_temp_bar_repl_lambda = Lambda [sorted_bin_param] hist_temp_bar_repl_body [t]
-  -- hist_temp_bar_repl <- letExp "hist_temp_bar_repl" $ Op $ Screma n' [sorted_bins] $ ScremaForm [][] hist_temp_bar_repl_lambda
-
-  -- (_, lam_adj) <- mkF f
-  -- vjpMap ops [AdjVal $ Var hist_temp_bar_repl] n' lam_adj [lis, sorted_vals, ris] -- Doesn't support lists
-
-  -- vs_bar_contrib_reordered <- lookupAdjVal sorted_vals
-  -- vs_bar_contrib <- letExp "vs_bar_contributions" $ BasicOp $ Replicate (Shape [n]) (head nes)
-  -- f''''' <- mkIdentityLambda [Prim int64, t]
-  -- vs_bar_contrib_scatter <- letExp "vs_bar_contrib_scatter" $ Op $ Scatter n' [sorted_is, vs_bar_contrib_reordered] f''''' [(Shape [n], 1, vs_bar_contrib)]
-  -- void $ updateAdj vs vs_bar_contrib_scatter
+  updateAdj vs vs_bar_contrib
 
 diffGeneralRBI _ _ _ _ _ _ = error $ "Pattern matching failed in diffGeneralRBI"
 
